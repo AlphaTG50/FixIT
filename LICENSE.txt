@@ -1,8 +1,0 @@
-Copyright (c) 2024 Fernando Soares (https://helpinformatik.de)
-
-Diese Software wird unter einer Dual-Lizenz veröffentlicht:
-
-1. Für nicht-kommerzielle Nutzung gilt die MIT-Lizenz
-2. Für kommerzielle Nutzung ist eine separate Lizenzvereinbarung erforderlich
-
-Kontaktieren Sie helpinformatik.de für kommerzielle Lizenzen.
