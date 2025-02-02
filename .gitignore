@@ -1,6 +1,2 @@
 node_modules
 dist
-/resources/executable/*
-!/resources/executable/*.exe
-!/resources/executable/*.ps1
-!/resources/executable/*.bat
