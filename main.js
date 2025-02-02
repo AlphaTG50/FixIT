@@ -1,8 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const { exec } = require('child_process');
 const os = require('os');
 const process = require('process');
+const fs = require('fs');
+const JSZip = require('jszip');
 
 // Fügen Sie App-Metadaten hinzu
 app.setAppUserModelId('com.helpit.tools');
@@ -141,4 +143,27 @@ ipcMain.handle('get-system-info', () => {
         os: `${os.type()} ${os.release()}`,
         platform: process.platform
     };
+});
+
+// Handler für ZIP-Erstellung
+ipcMain.handle('save-and-open-zip', async (event, files) => {
+    const zip = new JSZip();
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const zipName = `bug-report-${timestamp}.zip`;
+    const downloadsPath = app.getPath('downloads');
+    const zipPath = path.join(downloadsPath, zipName);
+
+    // Füge Dateien zum ZIP hinzu
+    files.forEach(file => {
+        zip.file(file.name, file.data.split('base64,')[1], {base64: true});
+    });
+
+    // Generiere und speichere ZIP
+    const content = await zip.generateAsync({type: "nodebuffer"});
+    fs.writeFileSync(zipPath, content);
+
+    // Öffne den Downloads-Ordner direkt
+    await shell.openPath(downloadsPath);
+    
+    return zipPath;
 }); 

@@ -25,7 +25,7 @@
         "to": "executable",
         "filter": [
           "**/*.ps1",
-          "**/*.bat", 
+          "**/*.bat",
           "**/*.exe"
         ]
       }
@@ -50,5 +50,8 @@
     "asarUnpack": [
       "node_modules/**/*"
     ]
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
   }
 }

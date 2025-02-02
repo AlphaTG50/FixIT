@@ -1,22 +1,37 @@
 class ToolManager {
     constructor() {
-        this.loadFavorites();
+        // Zuerst Tools und Favoriten laden
         this.initializeTools();
-        this.setupEventListeners();
+        this.loadFavorites();
+        
+        // Dann die aktuelle Ansicht initialisieren
         this.currentFilteredTools = this.tools;
-        this.renderTools();
+        
+        // Event Listener einrichten
+        this.setupEventListeners();
+        
+        // Erst jetzt die Tools rendern
+        this.renderTools(this.tools);
+        
+        // Rest der Initialisierung
         this.initTheme();
         this.setupWindowControls();
         this.loadAlwaysOnTopSetting();
+        this.toolHistory = this.loadHistory();
+        this.setupHistoryEventListeners();
+        this.setupImageUpload();
     }
 
     setupEventListeners() {
-        document.getElementById('searchInput').addEventListener('input', () => this.filterTools());
+        document.getElementById('searchInput').addEventListener('input', () => {
+            this.filterTools();
+        });
         
-        // Kategorie-Filter initialisieren (nur einmal beim Start)
         const categoryFilter = document.getElementById('categoryFilter');
         categoryFilter.innerHTML = this.getCategoryOptions();
-        categoryFilter.addEventListener('change', () => this.filterTools());
+        categoryFilter.addEventListener('change', () => {
+            this.filterTools();
+        });
         
         document.getElementById('darkModeToggle').addEventListener('click', () => this.toggleTheme());
         document.getElementById('settingsBtn').addEventListener('click', () => {
@@ -47,6 +62,24 @@ class ToolManager {
             e.preventDefault();
             this.submitBugReport();
         });
+    }
+
+    setupHistoryEventListeners() {
+        document.getElementById('historyBtn').addEventListener('click', () => {
+            this.showHistoryModal();
+        });
+        document.getElementById('closeHistoryBtn').addEventListener('click', () => {
+            this.hideHistoryModal();
+        });
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            this.clearHistory();
+        });
+    }
+
+    clearHistory() {
+        this.toolHistory = {};
+        this.saveHistory();
+        this.showHistoryModal();
     }
 
     initializeTools() {
@@ -259,7 +292,250 @@ class ToolManager {
                 website: 'https://xn--allestrungen-9ib.de',
                 description: 'Zeigt aktuelle Störungen und Ausfälle verschiedener Dienste',
                 logo: 'https://xn--allestrungen-9ib.de/favicon.ico'
+            },
+            {
+                id: '21',
+                name: 'GPU-Z',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/gpuz.exe',
+                },
+                website: 'https://www.techpowerup.com/gpuz/',
+                description: 'Detaillierte Informationen über die GPU-Hardware',
+                logo: 'https://www.techpowerup.com/favicon.ico'
+            },
+            {
+                id: '22',
+                name: 'CPU-Z',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/cpuz.exe',
+                },
+                website: 'https://www.cpuid.com/softwares/cpu-z.html',
+                description: 'Detaillierte Informationen zur CPU, RAM und Mainboard',
+                logo: 'https://www.cpuid.com/medias/images/softwares/cpu-z.svg'
+            },   
+            {
+                id: '23',
+                name: 'HWMonitor',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/hwmonitor.exe',
+                },
+                website: 'https://www.cpuid.com/softwares/hwmonitor.html',
+                description: 'Überwachung von CPU-, GPU- und Festplattentemperaturen',
+                logo: 'https://www.cpuid.com/medias/images/softwares/hwmonitor.svg'
+            },  
+            {
+                id: '24',
+                name: 'HeavyLoad',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/heavyload.exe',
+                },
+                website: 'https://www.jam-software.com/heavyload/',
+                description: 'Stresstest-Tool für CPU, RAM, GPU und Festplatte',
+                logo: 'https://www.jam-software.de/sites/default/files/2017-10/HeavyLoad.png'
+            },
+            {
+                id: '25',
+                name: 'BatteryInfoView',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/batteryinfoview.exe',
+                },
+                website: 'https://www.nirsoft.net/utils/battery_information_view.html',
+                description: 'Detaillierte Informationen zum Laptop-Akku',
+                logo: 'https://www.nirsoft.net/utils/batteryinfoview_icon.gif'
+            },
+            {
+                id: '26',
+                name: 'Core Temp',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/coretemp.exe',
+                },
+                website: 'https://www.alcpu.com/CoreTemp/',
+                description: 'Überwachung der CPU-Temperaturen',
+                logo: 'https://pics.computerbase.de/2/0/5/5/2/logo-256.png'
+            },
+            {
+                id: '27',
+                name: 'LastActivityView',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/lastactivityview.exe',
+                },
+                website: 'https://www.nirsoft.net/utils/computer_activity_view.html',
+                description: 'Zeigt die letzten Aktivitäten auf einem Computer an',
+                logo: 'assets/images/tools/lastactivityview.png'
+            },
+            {
+                id: '28',
+                name: 'Wireless Network Watcher',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/wnwatcher.exe',
+                },
+                website: 'https://www.nirsoft.net/utils/wireless_network_watcher.html',
+                description: 'Zeigt alle Geräte, die mit einem WLAN-Netzwerk verbunden sind',
+                logo: 'https://www.nirsoft.net/utils/wnetwatcher_icon.gif'
+            },
+            {
+                id: '29',
+                name: 'Advanced IP Scanner',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/advancedipscanner.exe',
+                },
+                website: 'https://www.advanced-ip-scanner.com/',
+                description: 'Einfacher Netzwerkscanner für IP- und MAC-Adressen',
+                logo: 'https://www.advanced-ip-scanner.com/favicon.ico'
+            },
+            {
+                id: '30',
+                name: 'System Information for Windows',
+                category: 'portable',
+                location: {
+                    portable: 'resources/executable/siw64.exe',
+                },
+                website: 'https://www.gtopala.com/',
+                description: 'Erweiterte Systeminformationen und Hardware-Analyse ',
+                logo: 'https://www.gtopala.com/favicon.ico'
+            },
+            {
+                id: '31',
+                name: 'URLscan.io',
+                category: 'website',
+                location: {
+                    portable: 'https://urlscan.io/',
+                },
+                website: 'https://urlscan.io/',
+                description: 'Analysiert URLs auf Phishing, Malware und Tracking',
+                logo: 'https://urlscan.io/favicon.ico'
+            },
+            {
+                id: '32',
+                name: 'Snapdrop',
+                category: 'website',
+                location: {
+                    portable: 'https://snapdrop.net/',
+                },
+                website: 'https://snapdrop.net/',
+                description: 'AirDrop-Alternative für schnelle Dateiübertragung im WLAN',
+                logo: 'https://raw.githubusercontent.com/snapdrop/snapdrop/master/client/images/logo_transparent_512x512.png'
+            },
+            {
+                id: '33',
+                name: 'Send Anywhere',
+                category: 'website',
+                location: {
+                    portable: 'https://send-anywhere.com/',
+                },
+                website: 'https://send-anywhere.com/',
+                description: 'Plattformübergreifende Dateiübertragung mit direktem Link',
+                logo: 'https://m.media-amazon.com/images/I/51wcsWQkfKL.png'
+            },
+            {
+                id: '34',
+                name: 'SwissTransfer',
+                category: 'website',
+                location: {
+                    portable: 'https://www.swisstransfer.com/',
+                },
+                website: 'https://www.swisstransfer.com/',
+                description: 'Sicherer und verschlüsselter Datei-Transfer mit hoher Geschwindigkeit',
+                logo: 'https://www.swisstransfer.com/favicon.ico'
+            },      
+            {
+                id: '35',
+                name: 'Google Phishing Quiz',
+                category: 'website',
+                location: {
+                    portable: 'https://phishingquiz.withgoogle.com/',
+                },
+                website: 'https://phishingquiz.withgoogle.com/',
+                description: 'Interaktives Quiz zum Erkennen von Phishing-Versuchen',
+                logo: 'https://cdn-icons-png.flaticon.com/512/9177/9177811.png'
+            },
+            {
+                id: '36',
+                name: 'Send Test Email',
+                category: 'website',
+                location: {
+                    portable: 'https://sendtestemail.com/?act=send-test-email',
+                },
+                website: 'https://sendtestemail.com/?act=send-test-email',
+                description: 'Versende Test-E-Mails zur Überprüfung von SMTP-Konfigurationen',
+                logo: 'https://sendtestemail.com/favicon.ico'
+            },
+            {
+                id: '37',
+                name: 'Guerrilla Mail Tools',
+                category: 'website',
+                location: {
+                    portable: 'https://www.guerrillamail.com/tools',
+                },
+                website: 'https://www.guerrillamail.com/tools',
+                description: 'Werkzeuge für temporäre E-Mails und Anonymität im Netz',
+                logo: 'https://www.guerrillamail.com/favicon.ico'
+            },
+            {
+                id: '38',
+                name: 'Müllmail',
+                category: 'website',
+                location: {
+                    portable: 'https://muellmail.com/',
+                },
+                website: 'https://muellmail.com/',
+                description: 'Erstellt temporäre E-Mail-Adressen zum Schutz vor Spam',
+                logo: 'https://muellmail.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fnewmail-corner.ff3b98de.webp&w=256&q=75'
+            },
+            {
+                id: '39',
+                name: 'DNSChecker - All Tools',
+                category: 'website',
+                location: {
+                    portable: 'https://dnschecker.org/all-tools.php',
+                },
+                website: 'https://dnschecker.org/all-tools.php',
+                description: 'Sammlung von DNS- und Netzwerk-Tools zur Überprüfung von Domains, IPs und mehr',
+                logo: 'assets/images/tools/dnschecker.png'
+            },
+            {
+                id: '40',
+                name: 'Eat This Much',
+                category: 'website',
+                location: {
+                    portable: 'https://www.eatthismuch.com/',
+                },
+                website: 'https://www.eatthismuch.com/',
+                description: 'Automatisierter Ernährungsplaner basierend auf Kalorien- und Makrozielen',
+                logo: 'https://www.eatthismuch.com/favicon.ico'
+            },
+            {
+                id: '41',
+                name: 'Omni Calculator',
+                category: 'website',
+                location: {
+                    portable: 'https://www.omnicalculator.com/',
+                },
+                website: 'https://www.omnicalculator.com/',
+                description: 'Sammlung von über 3000 spezialisierten Online-Rechnern für alle Bereiche',
+                logo: 'assets/images/tools/omnicalculator.png'
+            },
+            {
+                id: '42',
+                name: 'Date Night Movies',
+                category: 'website',
+                location: {
+                    portable: 'https://datenightmovies.com/',
+                },
+                website: 'https://datenightmovies.com/',
+                description: 'Empfiehlt Filme basierend auf den Vorlieben von zwei Personen',
+                logo: 'https://datenightmovies.com/favicon.ico'
             }
+            
         ];
     }
 
@@ -361,45 +637,51 @@ class ToolManager {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const categoryFilter = document.getElementById('categoryFilter').value;
 
-        this.currentFilteredTools = this.tools.filter(tool => {
+        // Filtere die Tools
+        const filteredTools = this.tools.filter(tool => {
             const matchesSearch = tool.name.toLowerCase().includes(searchTerm) ||
                                 tool.description.toLowerCase().includes(searchTerm);
             const matchesCategory = !categoryFilter || tool.category === categoryFilter;
             return matchesSearch && matchesCategory;
         });
 
-        // Sortiere die gefilterten Tools
-        const sortedAndFilteredTools = [...this.currentFilteredTools].sort((a, b) => {
-            const aIsFav = this.favorites.has(a.id);
-            const bIsFav = this.favorites.has(b.id);
-            
-            if (aIsFav === bIsFav) {
-                return a.name.localeCompare(b.name);
-            }
-            return aIsFav ? -1 : 1;
-        });
-
-        this.renderTools(sortedAndFilteredTools);
+        // Aktualisiere currentFilteredTools und rendere
+        this.currentFilteredTools = filteredTools;
+        this.renderTools(this.currentFilteredTools);
     }
 
     launchTool(location) {
+        // Finde das Tool anhand der Location oder Website URL
+        const tool = this.tools.find(t => 
+            t.location.portable === location || 
+            t.website === location
+        );
+        
+        if (tool) {
+            this.trackToolUsage(tool);
+        }
+        
         try {
             window.electronAPI.launchTool(location);
         } catch (error) {
             console.error('Fehler beim Starten des Tools:', error);
-            alert('Das Tool konnte nicht gestartet werden. Bitte überprüfen Sie den Speicherort.');
+            alert('Das Tool konnte nicht gestartet werden.');
         }
     }
 
-    renderTools(toolsToRender = this.tools) {
+    renderTools(toolsToRender) {
         const toolsList = document.getElementById('toolsList');
         toolsList.innerHTML = '';
 
-        // Sortiere Tools: Erst Favoriten, dann alphabetisch innerhalb der Gruppen
+        if (!toolsToRender || toolsToRender.length === 0) {
+            toolsList.innerHTML = '<div class="no-tools">Keine Tools gefunden</div>';
+            return;
+        }
+
+        // Sortiere Tools (Favoriten zuerst)
         const sortedTools = [...toolsToRender].sort((a, b) => {
             const aIsFav = this.favorites.has(a.id);
             const bIsFav = this.favorites.has(b.id);
-            
             if (aIsFav === bIsFav) {
                 return a.name.localeCompare(b.name);
             }
@@ -413,7 +695,7 @@ class ToolManager {
             const isFavorite = this.favorites.has(tool.id);
             const favoriteButton = `
                 <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
-                        onclick="toolManager.toggleFavorite('${tool.id}')">
+                        onclick="event.stopPropagation(); toolManager.toggleFavorite('${tool.id}')">
                     <i class="fas fa-star"></i>
                 </button>
             `;
@@ -423,7 +705,7 @@ class ToolManager {
             switch(tool.category) {
                 case 'website':
                     actionButtons = `
-                        <button class="launch-btn" onclick="window.electronAPI.launchTool('${tool.location.portable}')">
+                        <button class="launch-btn" onclick="toolManager.launchTool('${tool.location.portable}')">
                             <i class="fas fa-external-link-alt"></i> Im Browser öffnen
                         </button>
                     `;
@@ -441,7 +723,7 @@ class ToolManager {
             // Website-Link nur anzeigen, wenn es keine Website-Kategorie ist
             const websiteLink = tool.category === 'website' ? '' : `
                 <div class="tool-website">
-                    <a href="#" onclick="window.electronAPI.launchTool('${tool.website}'); return false;">
+                    <a href="#" onclick="toolManager.launchTool('${tool.website}'); return false;">
                         <i class="fas fa-external-link-alt"></i> Website
                     </a>
                 </div>
@@ -468,17 +750,18 @@ class ToolManager {
                 </div>
                 <p>${tool.description}</p>
             `;
+            
             toolsList.appendChild(toolCard);
         });
 
-        // Füge nur den Footer hinzu, NICHT das Dropdown-Menü
+        // Footer aktualisieren
         const footer = document.querySelector('.footer');
         footer.innerHTML = `
             <div class="social-links">
                 <a href="#" onclick="window.electronAPI.launchTool('https://helpinformatik.de/'); return false;" title="Website">
                     <i class="fas fa-globe"></i>
                 </a>
-                <a href="#" onclick="window.electronAPI.launchTool('https://github.com/AlphaTG050'); return false;" title="GitHub">
+                <a href="#" onclick="window.electronAPI.launchTool('https://github.com/AlphaTG50'); return false;" title="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
                 <a href="#" onclick="window.electronAPI.launchTool('https://www.instagram.com/helpit.informatik'); return false;" title="Instagram">
@@ -488,7 +771,12 @@ class ToolManager {
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
-            <p>© ${new Date().getFullYear()} HelpIT - Alle Rechte vorbehalten</p>
+            <div class="footer-bottom">
+                <div class="footer-text">
+                    <span class="tool-count">Anzahl der Tools: ${toolsToRender.length}</span>
+                    <p>© 2024 HelpIT - Alle Rechte vorbehalten</p>
+                </div>
+            </div>
         `;
     }
 
@@ -512,18 +800,10 @@ class ToolManager {
 
     getCategoryOptions() {
         return `
-            <option value="" class="category-option">
-                Alle Tools
-            </option>
-            <option value="website" class="category-option">
-                Websites
-            </option>
-            <option value="scripts" class="category-option">
-                Skripts
-            </option>
-            <option value="portable" class="category-option">
-                Portable Apps
-            </option>
+            <option value="">Alle Kategorien</option>
+            <option value="website">Website</option>
+            <option value="scripts">Skripts</option>
+            <option value="portable">Portable</option>
         `;
     }
 
@@ -593,7 +873,8 @@ class ToolManager {
     }
 
     loadFavorites() {
-        this.favorites = new Set(JSON.parse(localStorage.getItem('favorites') || '[]'));
+        const savedFavorites = localStorage.getItem('favorites');
+        this.favorites = new Set(savedFavorites ? JSON.parse(savedFavorites) : []);
     }
 
     saveFavorites() {
@@ -601,12 +882,17 @@ class ToolManager {
     }
 
     toggleFavorite(toolId) {
+        // Toggle Favorit-Status
         if (this.favorites.has(toolId)) {
             this.favorites.delete(toolId);
         } else {
             this.favorites.add(toolId);
         }
-        this.saveFavorites();
+
+        // Speichern
+        localStorage.setItem('favorites', JSON.stringify([...this.favorites]));
+
+        // Aktuelle Ansicht neu rendern
         this.renderTools(this.currentFilteredTools);
     }
 
@@ -614,6 +900,10 @@ class ToolManager {
         const modal = document.getElementById('aboutModal');
         modal.style.display = 'block';
         this.loadSystemInfo();
+        
+        // Version über die electronAPI abrufen
+        const version = window.electronAPI.getAppVersion();
+        document.getElementById('appVersion').textContent = version;
     }
 
     hideAboutModal() {
@@ -669,13 +959,184 @@ class ToolManager {
 - Plattform: ${info.platform}`);
         }
         
+        // Sammle alle Dateien
+        const fileItems = document.querySelectorAll('.file-item');
+        const files = Array.from(fileItems).map(item => ({
+            name: item.querySelector('span').textContent,
+            data: item.dataset.file
+        }));
+
+        if (files.length > 0) {
+            try {
+                const zipPath = await window.electronAPI.saveAndOpenZip(files);
+                bodyParts.push(`\nAngehängte Dateien wurden als ZIP-Archiv gespeichert:\n${zipPath}`);
+                this.showToast('Screenshots wurden als ZIP-Archiv gespeichert. Der Ordner wurde geöffnet.', 'info');
+            } catch (error) {
+                console.error('Fehler beim Erstellen des ZIP-Archivs:', error);
+                this.showToast('Fehler beim Speichern der Dateien', 'error');
+            }
+        }
+        
         const body = bodyParts.join('\n\n');
         
         const mailtoLink = `mailto:guerkan.privat@gmail.com?subject=FixIT Bug Report: ${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
         window.electronAPI.launchTool(mailtoLink);
         
+        // Zurücksetzen des Upload-Bereichs
+        const uploadArea = document.getElementById('imageUploadArea');
+        const uploadPlaceholder = uploadArea.querySelector('.upload-placeholder');
+        
+        // Entferne alle file-items
+        uploadArea.querySelectorAll('.file-item').forEach(item => item.remove());
+        
+        // Zeige den Placeholder wieder an
+        uploadPlaceholder.style.display = 'flex';
+        
         this.hideBugReportModal();
+    }
+
+    loadHistory() {
+        return JSON.parse(localStorage.getItem('toolHistory') || '{}');
+    }
+
+    saveHistory() {
+        localStorage.setItem('toolHistory', JSON.stringify(this.toolHistory));
+    }
+
+    trackToolUsage(tool) {
+        const now = new Date();
+        if (!this.toolHistory[tool.id]) {
+            this.toolHistory[tool.id] = {
+                name: tool.name,
+                logo: tool.logo,
+                count: 0,
+                lastUsed: null
+            };
+        }
+        
+        this.toolHistory[tool.id].count++;
+        this.toolHistory[tool.id].lastUsed = now.toISOString();
+        this.saveHistory();
+    }
+
+    showHistoryModal() {
+        const modal = document.getElementById('historyModal');
+        const historyList = document.getElementById('historyList');
+        
+        // Sortiere nach letzter Nutzung
+        const sortedHistory = Object.entries(this.toolHistory)
+            .sort(([,a], [,b]) => new Date(b.lastUsed) - new Date(a.lastUsed));
+
+        historyList.innerHTML = sortedHistory.map(([id, data]) => {
+            const lastUsed = new Date(data.lastUsed).toLocaleString();
+            return `
+                <div class="history-item">
+                    <div class="history-item-left">
+                        <img src="${data.logo}" alt="${data.name}" class="history-item-icon">
+                        <div class="history-item-details">
+                            <div class="history-item-name">${data.name}</div>
+                            <div class="history-item-meta">Zuletzt: ${lastUsed}</div>
+                        </div>
+                    </div>
+                    <span class="history-item-count">${data.count}x</span>
+                </div>
+            `;
+        }).join('');
+
+        modal.style.display = 'block';
+    }
+
+    hideHistoryModal() {
+        document.getElementById('historyModal').style.display = 'none';
+    }
+
+    setupImageUpload() {
+        const uploadArea = document.getElementById('imageUploadArea');
+        const fileInput = document.getElementById('bugImages');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        // Drag & Drop Events
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            this.handleFiles(files);
+        });
+        
+        // Normaler File Input
+        fileInput.addEventListener('change', (e) => {
+            this.handleFiles(e.target.files);
+        });
+    }
+
+    showToast(message, type = 'error') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+
+        // Toast nach 3 Sekunden entfernen
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    handleFiles(files) {
+        const uploadArea = document.getElementById('imageUploadArea');
+        const uploadPlaceholder = uploadArea.querySelector('.upload-placeholder');
+        
+        Array.from(files).forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                this.showToast('Nur Bilder im Format JPG oder PNG sind erlaubt.');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                this.showToast('Die Datei ist zu groß. Maximale Größe ist 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.dataset.file = e.target.result; // Speichere Base64-Daten
+                fileItem.innerHTML = `
+                    <i class="fas fa-image"></i>
+                    <span title="${file.name}">${file.name}</span>
+                    <button class="remove-file" title="Entfernen">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+
+                const removeBtn = fileItem.querySelector('.remove-file');
+                removeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    fileItem.remove();
+                    
+                    const hasFiles = uploadArea.querySelectorAll('.file-item').length > 0;
+                    uploadPlaceholder.style.display = hasFiles ? 'none' : 'flex';
+                });
+                
+                uploadArea.insertBefore(fileItem, uploadPlaceholder);
+                uploadPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
     }
 }
 
-const toolManager = new ToolManager(); 
+const toolManager = new ToolManager();

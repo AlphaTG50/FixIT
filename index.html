@@ -38,6 +38,11 @@
                             <i class="fas fa-bug"></i>
                         </button>
                     </div>
+                    <div class="tooltip-container" data-tooltip="Verlauf">
+                        <button id="historyBtn" class="history-btn">
+                            <i class="fas fa-history"></i>
+                        </button>
+                    </div>
                     <button id="aboutBtn" class="about-btn">
                         <i class="fas fa-info-circle"></i>
                     </button>
@@ -61,10 +66,12 @@
         </header>
 
         <main>
-            <div id="toolsList" class="tools-grid"></div>
+            <div class="tools-container">
+                <div id="toolsList" class="tools-grid"></div>
+            </div>
         </main>
         <footer class="footer">
-            <p>© 2024 HelpIT - Alle Rechte vorbehalten</p>
+            <p>© 2024 HelpIT - Alle Rechte vorbehalten | <span class="tool-counter" id="toolCounter"></span></p>
         </footer>
     </div>
     <div id="settingsModal" class="modal">
@@ -98,6 +105,31 @@
             </div>
             <div class="about-sections">
                 <section class="about-section">
+                    <h3>FixIT</h3>
+                    <div class="system-info">
+                        <div class="info-item">
+                            <span class="info-label">Version</span>
+                            <span class="info-value" id="appVersion"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Produkt</span>
+                            <span class="info-value">FixIT Tools</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Entwickler</span>
+                            <span class="info-value">HelpIT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Lizenz</span>
+                            <span class="info-value">MIT</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Build ID</span>
+                            <span class="info-value">com.fixit.tools</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="about-section">
                     <h3>System Informationen</h3>
                     <div class="system-info">
                         <div class="info-item">
@@ -126,6 +158,23 @@
                         </div>
                     </div>
                 </section>
+                <section class="about-section">
+                    <h3>Kontakt & Support</h3>
+                    <div class="system-info">
+                        <div class="info-item">
+                            <span class="info-label">Website</span>
+                            <span class="info-value"><a href="#" onclick="window.electronAPI.launchTool('https://helpinformatik.de/'); return false;">helpinformatik.de</a></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">E-Mail</span>
+                            <span class="info-value"><a href="mailto:guerkan.privat@gmail.com">guerkan.privat@gmail.com</a></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">GitHub</span>
+                            <span class="info-value"><a href="#" onclick="window.electronAPI.launchTool('https://github.com/AlphaTG050'); return false;">github.com/AlphaTG050</a></span>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
@@ -138,7 +187,6 @@
                 </button>
             </div>
             <form id="bugReportForm" class="bug-report-form">
-                <div class="scroll-stop-top"></div>
                 <div class="form-content">
                     <div class="form-group">
                         <label for="bugType" class="required">Art des Problems</label>
@@ -172,6 +220,18 @@
                         <label for="bugActual">Tatsächliches Verhalten</label>
                         <textarea id="bugActual" rows="2" placeholder="Was ist stattdessen passiert?"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="bugImages">Bilder hinzufügen</label>
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <div class="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Bilder hier ablegen oder klicken zum Auswählen</p>
+                                <span class="upload-info">Maximale Größe: 5MB, Formate: JPG, PNG</span>
+                            </div>
+                            <input type="file" id="bugImages" multiple accept="image/*" class="file-input">
+                        </div>
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
                     <div class="form-group checkbox-group">
                         <label class="checkbox-wrapper" for="includeSystemInfo">
                             <input type="checkbox" id="includeSystemInfo">
@@ -186,6 +246,24 @@
             </form>
         </div>
     </div>
+    <div id="historyModal" class="modal">
+        <div class="modal-content history-modal">
+            <div class="modal-header">
+                <h2>Verlauf</h2>
+                <div class="modal-header-controls">
+                    <button class="clear-history-btn" id="clearHistoryBtn" title="Verlauf löschen">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="close-modal-btn" id="closeHistoryBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- Wird dynamisch befüllt -->
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

@@ -1,6 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const fs = require('fs').promises;
 const path = require('path');
+const JSZip = require('jszip');
+
+// Version aus package.json lesen
+const appVersion = require('./package.json').version;
 
 contextBridge.exposeInMainWorld('electronAPI', {
     minimizeWindow: () => ipcRenderer.send('minimize-window'),
@@ -20,5 +24,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
             return false;
         }
     },
-    getSystemInfo: () => ipcRenderer.invoke('get-system-info')
+    getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
+    // Version zur Verfügung stellen
+    getAppVersion: () => appVersion,
+    saveAndOpenZip: async (files) => ipcRenderer.invoke('save-and-open-zip', files),
+    showFolder: (folderPath) => ipcRenderer.send('show-folder', folderPath)
 }); 

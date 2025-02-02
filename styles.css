@@ -58,6 +58,16 @@ h1 {
 
 .search-bar {
     display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar select {
+    min-width: 120px;
+}
+
+.search-bar {
+    display: flex;
     gap: 15px;
     margin-bottom: 20px;
     align-items: center;
@@ -135,87 +145,31 @@ input, select, textarea {
     margin-bottom: 20px;
 }
 
+.tools-container {
+    padding: 0 20px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden; /* Verhindert Überlappung */
+}
+
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
-    max-width: 1800px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
 }
 
-/* Responsive Breakpoints für exponentielles Wachstum */
-@media (min-width: 640px) {
+/* Responsive Breakpoints anpassen */
+@media (min-width: 1040px) {
     .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        /* auto-fill statt fester Anzahl, damit keine Überlappung stattfindet */
     }
 }
 
-@media (min-width: 960px) {
-    .tools-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .tools-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (min-width: 1600px) {
-    .tools-grid {
-        grid-template-columns: repeat(5, 1fr);
-    }
-}
-
-@media (min-width: 1920px) {
-    .tools-grid {
-        grid-template-columns: repeat(6, 1fr);
-    }
-}
-
-@media (min-width: 2240px) {
-    .tools-grid {
-        grid-template-columns: repeat(7, 1fr);
-    }
-}
-
-@media (min-width: 2560px) {
-    .tools-grid {
-        grid-template-columns: repeat(8, 1fr);
-    }
-}
-
-@media (min-width: 2880px) {
-    .tools-grid {
-        grid-template-columns: repeat(9, 1fr);
-    }
-}
-
-@media (min-width: 3200px) {
-    .tools-grid {
-        grid-template-columns: repeat(10, 1fr);
-    }
-}
-
-@media (min-width: 3520px) {
-    .tools-grid {
-        grid-template-columns: repeat(11, 1fr);
-    }
-}
-
-@media (min-width: 3840px) {
-    .tools-grid {
-        grid-template-columns: repeat(12, 1fr);
-    }
-}
-
-/* Für kleinere Bildschirme */
-@media (max-width: 639px) {
-    .tools-grid {
-        grid-template-columns: 1fr;
-    }
-}
+/* Die anderen Media Queries können entfernt werden, 
+   da auto-fill sich automatisch anpasst */
 
 .tool-card {
     background-color: var(--card-color);
@@ -368,6 +322,8 @@ input, select, textarea {
     width: 48px;
     height: 48px;
     object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .tool-title {
@@ -381,7 +337,7 @@ input, select, textarea {
 .header-left {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
 }
 
 .header-left h1 {
@@ -406,6 +362,19 @@ input, select, textarea {
 
 .footer p {
     opacity: 0.8;
+}
+
+.footer-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-count {
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.9rem;
 }
 
 /* Neue Styles für den Titelbalken */
@@ -781,29 +750,55 @@ input, select, textarea {
 /* Über Modal Styles */
 .about-modal {
     max-width: 500px;
+    max-height: 90vh;
     background: var(--card-color);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.about-section {
-    margin-bottom: 20px;
+/* Verstecke nur die Scrollbar visuell */
+.about-modal::-webkit-scrollbar {
+    display: none;
 }
 
+/* Abstand zwischen Überschrift und Info-Box */
 .about-section h3 {
     margin-bottom: 15px;
     color: var(--text-color);
     font-size: 1.1rem;
 }
 
+/* Abstand zwischen den Sektionen */
+.about-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding: 0 5px;
+}
+
+/* Abstand innerhalb der Sektionen */
+.about-section {
+    margin-bottom: 25px;
+}
+
+.about-section:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 25px;
+}
+
+/* Abstand für die Info-Boxen */
 .system-info {
     background: var(--background-color);
     border-radius: var(--border-radius);
     padding: 15px;
+    margin-top: 10px; /* Zusätzlicher Abstand nach oben */
 }
 
 .info-item {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    padding: 6px 0;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -943,22 +938,19 @@ input, select, textarea {
     max-height: 80vh;
     overflow-y: auto;
     padding: 20px 25px;
-    /* Scrollbar ausblenden */
+    padding-bottom: 0; /* Entferne das untere Padding */
     scrollbar-width: none;
     -ms-overflow-style: none;
-    /* Scroll Verhalten */
     scroll-behavior: smooth;
     overscroll-behavior: contain;
-    /* Scroll Padding */
-    scroll-padding-top: 20px;
-    scroll-padding-bottom: 20px;
 }
 
 /* Scroll Container für den Inhalt */
 .form-content {
-    padding: 1px; /* Verhindert Margin-Collapse */
-    min-height: calc(80vh - 40px); /* Höhe minus Padding */
+    padding: 1px;
+    min-height: auto; /* Entferne die feste Mindesthöhe */
     position: relative;
+    padding-bottom: 20px; /* Füge etwas Abstand unten hinzu */
 }
 
 /* Scroll Stopper am Anfang und Ende */
@@ -968,8 +960,8 @@ input, select, textarea {
     position: sticky;
     left: 0;
     right: 0;
-    z-index: 1; /* Niedrigerer z-index */
-    pointer-events: none; /* Deaktiviert Klick-Events */
+    z-index: 1;
+    pointer-events: none;
 }
 
 .scroll-stop-top {
@@ -979,7 +971,8 @@ input, select, textarea {
 
 .scroll-stop-bottom {
     bottom: 0;
-    background: linear-gradient(to top, var(--card-color) 50%, transparent);
+    /* Entferne den Gradienten für den unteren Stopper */
+    display: none; /* oder komplett ausblenden */
 }
 
 .bug-report-form::-webkit-scrollbar {
@@ -1128,6 +1121,7 @@ input, select, textarea {
     font-weight: 600;
     font-size: 0.95rem;
     transition: all 0.3s ease;
+    margin-bottom: 40px;
 }
 
 .submit-btn:hover {
@@ -1164,4 +1158,306 @@ input, select, textarea {
 [data-theme="dark"] .form-group input::placeholder,
 [data-theme="dark"] .form-group textarea::placeholder {
     color: #666;
+}
+
+.tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.tool-tag {
+    background: var(--accent-color);
+    color: var(--text-color);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.tool-tag:hover {
+    opacity: 1;
+}
+
+.tool-counter {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+.tool-counter {
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* ...existing code... */
+
+.history-modal {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.history-list {
+    padding: 15px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 8px;
+}
+
+.history-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.history-item-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.history-item-details {
+    flex-grow: 1;
+}
+
+.history-item-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.history-item-meta {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.history-item-count {
+    background: var(--accent-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.modal-header-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.clear-history-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.clear-history-btn:hover {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+/* ...existing code... */
+
+.about-section a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.about-section a:hover {
+    opacity: 0.8;
+}
+
+/* Image Upload Styles */
+.image-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--background-color);
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.image-upload-area.drag-over {
+    border-color: var(--accent-color);
+    background: rgba(52, 152, 219, 0.05);
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.upload-placeholder i {
+    font-size: 2rem;
+    color: var(--accent-color);
+    opacity: 0.7;
+}
+
+.upload-placeholder p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.upload-info {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1; /* Unter den file-items */
+}
+
+/* File Item Styles */
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--card-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    margin: 5px 0;
+    position: relative; /* Wichtig für z-index */
+    z-index: 2; /* Über dem file-input */
+}
+
+.file-item i.fa-image {
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.file-item span {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.file-item .remove-file {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    margin-left: auto;
+}
+
+.file-item .remove-file:hover {
+    color: #e74c3c;
+    opacity: 1;
+}
+
+.file-item .remove-file i {
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+}
+
+/* Toast Notification Styles */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card-color);
+    color: var(--text-color);
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    border-left: 4px solid;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+    line-height: 1.4;
+}
+
+.toast.error {
+    border-left-color: #e74c3c;
+}
+
+.toast i {
+    font-size: 1.2rem;
+}
+
+.toast.error i {
+    color: #e74c3c;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast.info {
+    border-left-color: var(--accent-color);
+}
+
+.toast.info i {
+    color: var(--accent-color);
+}
+
+.toast span {
+    flex: 1;
+    font-size: 0.95rem;
 }
