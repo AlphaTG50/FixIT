@@ -1,0 +1,54 @@
+{
+  "name": "helpit",
+  "version": "1.0.9",
+  "description": "HelpIT Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "author": "HelpIT",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.fixit.tools",
+    "productName": "FixIT",
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": "resources/executable",
+        "to": "executable",
+        "filter": [
+          "**/*.ps1",
+          "**/*.bat", 
+          "**/*.exe"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/images/logo/win/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FixIT",
+      "uninstallDisplayName": "FixIT",
+      "artifactName": "FixIT-Setup-${version}.${ext}"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/**/*"
+    ]
+  }
+}

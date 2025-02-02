@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIT</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/logo/win/icon.ico">
+</head>
+<body>
+    <div class="titlebar">
+        <div class="titlebar-left">
+            <img src="assets/images/logo/helpit_white.svg" alt="IT-Tools Logo" class="titlebar-logo">
+            <span class="titlebar-title">FixIT</span>
+        </div>
+        <div class="window-controls">
+            <button class="window-control minimize" id="minimizeBtn">
+                <i class="fas fa-window-minimize"></i>
+            </button>
+            <button class="window-control maximize" id="maximizeBtn">
+                <i class="fas fa-window-maximize"></i>
+            </button>
+            <button class="window-control close" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="header-left">
+                    <h1>Toolbox</h1>
+                </div>
+                <div class="header-controls">
+                    <div class="tooltip-container" data-tooltip="Problem melden">
+                        <button id="bugReportBtn" class="bug-report-btn">
+                            <i class="fas fa-bug"></i>
+                        </button>
+                    </div>
+                    <button id="aboutBtn" class="about-btn">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button id="settingsBtn" class="settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="darkModeToggle" class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Tool suchen...">
+                <select id="categoryFilter">
+                    <option value="">Alle Kategorien</option>
+                    <option value="website">Website</option>
+                    <option value="scripts">Skripts</option>
+                    <option value="portable">Portable</option>
+                </select>
+            </div>
+        </header>
+
+        <main>
+            <div id="toolsList" class="tools-grid"></div>
+        </main>
+        <footer class="footer">
+            <p>© 2024 HelpIT - Alle Rechte vorbehalten</p>
+        </footer>
+    </div>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content settings-modal">
+            <div class="modal-header">
+                <h2>Einstellungen</h2>
+                <button class="close-modal-btn" id="closeSettingsBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="settings-sections">
+                <section class="settings-section">
+                    <h3>Fenster</h3>
+                    <div class="setting-item">
+                        <label>
+                            <span>Immer im Vordergrund</span>
+                            <input type="checkbox" id="alwaysOnTop">
+                        </label>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div id="aboutModal" class="modal">
+        <div class="modal-content about-modal">
+            <div class="modal-header">
+                <h2>Über FixIT</h2>
+                <button class="close-modal-btn" id="closeAboutBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="about-sections">
+                <section class="about-section">
+                    <h3>System Informationen</h3>
+                    <div class="system-info">
+                        <div class="info-item">
+                            <span class="info-label">Electron Version</span>
+                            <span class="info-value" id="electronVersion"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Chrome Version</span>
+                            <span class="info-value" id="chromeVersion"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Node Version</span>
+                            <span class="info-value" id="nodeVersion"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">V8 Version</span>
+                            <span class="info-value" id="v8Version"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Betriebssystem</span>
+                            <span class="info-value" id="osInfo"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Plattform</span>
+                            <span class="info-value" id="platform"></span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div id="bugReportModal" class="modal">
+        <div class="modal-content bug-report-modal">
+            <div class="modal-header">
+                <h2>Problem melden</h2>
+                <button class="close-modal-btn" id="closeBugReportBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="bugReportForm" class="bug-report-form">
+                <div class="scroll-stop-top"></div>
+                <div class="form-content">
+                    <div class="form-group">
+                        <label for="bugType" class="required">Art des Problems</label>
+                        <select id="bugType" required>
+                            <option value="">Bitte wählen...</option>
+                            <option value="error">Fehlermeldung</option>
+                            <option value="crash">Programm-Absturz</option>
+                            <option value="performance">Performance-Problem</option>
+                            <option value="ui">Benutzeroberfläche</option>
+                            <option value="feature">Feature-Vorschlag</option>
+                            <option value="other">Sonstiges</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bugTitle" class="required">Titel</label>
+                        <input type="text" id="bugTitle" required placeholder="Kurze Beschreibung des Problems">
+                    </div>
+                    <div class="form-group">
+                        <label for="bugDescription" class="required">Beschreibung</label>
+                        <textarea id="bugDescription" required rows="5" placeholder="Detaillierte Beschreibung des Problems..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="bugSteps">Schritte zum Reproduzieren</label>
+                        <textarea id="bugSteps" rows="3" placeholder="1. Schritt&#10;2. Schritt&#10;3. Schritt"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="bugExpected">Erwartetes Verhalten</label>
+                        <textarea id="bugExpected" rows="2" placeholder="Was sollte eigentlich passieren?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="bugActual">Tatsächliches Verhalten</label>
+                        <textarea id="bugActual" rows="2" placeholder="Was ist stattdessen passiert?"></textarea>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-wrapper" for="includeSystemInfo">
+                            <input type="checkbox" id="includeSystemInfo">
+                            <span>System-Informationen anhängen</span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">Problem melden</button>
+                    </div>
+                </div>
+                <div class="scroll-stop-bottom"></div>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
