@@ -1,21 +1,22 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #3498db;
-    --background-color: #f5f6fa;
-    --card-color: #ffffff;
-    --text-color: #2c3e50;
-    --border-color: #ddd;
+    --primary-color: #2D5D8C;
+    --secondary-color: #5F9EDC;
+    --accent-color: #5F9EDC;
+    --background-color: #F5F9FF;
+    --card-color: #FFFFFF;
+    --text-color: #2D5D8C;
+    --border-color: #E1EEFF;
     --border-radius: 8px;
+    --theme-transition: 0.2s ease;
 }
 
 [data-theme="dark"] {
-    --primary-color: #ecf0f1;
-    --secondary-color: #3498db;
-    --accent-color: #3498db;
-    --background-color: #1a1a1a;
-    --card-color: #2c2c2c;
-    --text-color: #ecf0f1;
+    --primary-color: #A3D5FF;
+    --secondary-color: #5F9EDC;
+    --accent-color: #5F9EDC;
+    --background-color: #1E1E1E;
+    --card-color: #2D2D2D;
+    --text-color: #D6D8DB;
     --border-color: #404040;
 }
 
@@ -23,6 +24,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: none;
 }
 
 body {
@@ -58,19 +60,45 @@ h1 {
 
 .search-bar {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.search-bar select {
-    min-width: 120px;
-}
-
-.search-bar {
-    display: flex;
     gap: 15px;
-    margin-bottom: 20px;
-    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    opacity: 0.7;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: var(--card-color);
+    color: var(--text-color);
+    transition: none;
+}
+
+.search-input-wrapper input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(95, 158, 220, 0.1);
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
 }
 
 .header-top {
@@ -88,7 +116,7 @@ h1 {
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: none;
     position: relative;
     overflow: hidden;
     outline: none;
@@ -130,11 +158,6 @@ input, select, textarea {
     color: var(--text-color);
 }
 
-.search-bar input {
-    flex: 1;
-    min-width: 200px;
-}
-
 .add-btn {
     background-color: var(--secondary-color);
     color: white;
@@ -149,28 +172,41 @@ input, select, textarea {
     padding: 0 20px;
     width: 100%;
     max-width: 100%;
-    overflow: hidden; /* Verhindert Überlappung */
+    overflow: visible; /* Ändern von hidden zu visible */
 }
 
 .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Minimum breite erhöht */
+    gap: 30px;
     width: 100%;
     max-width: 100%;
 }
 
-/* Responsive Breakpoints anpassen */
-@media (min-width: 1040px) {
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
     .tools-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        /* auto-fill statt fester Anzahl, damit keine Überlappung stattfindet */
+        grid-template-columns: 1fr; /* Eine Spalte auf kleinen Bildschirmen */
+    }
+    
+    .tools-container {
+        padding: 0 10px;
     }
 }
 
-/* Die anderen Media Queries können entfernt werden, 
-   da auto-fill sich automatisch anpasst */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .tools-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
 
+@media (min-width: 1201px) {
+    .tools-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
+/* Tool Card Anpassungen */
 .tool-card {
     background-color: var(--card-color);
     padding: 20px;
@@ -178,40 +214,80 @@ input, select, textarea {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: 1px solid var(--border-color);
     position: relative;
+    width: 100%; /* Stellt sicher, dass die Karte die volle Breite einnimmt */
+    word-wrap: break-word; /* Verhindert Text-Overflow */
+    overflow: hidden; /* Verhindert Überlauf */
+    transition: background-color var(--theme-transition),
+                border-color var(--theme-transition);
 }
 
 .tool-card h3 {
     margin-bottom: 10px;
     color: var(--primary-color);
+    transition: color var(--theme-transition);
 }
 
 .tool-category {
-    display: inline-block;
-    font-size: 0.8rem;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent-color);
     padding: 4px 12px;
-    border-radius: 12px;
+    border-radius: 6px;
     margin-bottom: 10px;
+    background: rgba(95, 158, 220, 0.1); /* Basierend auf --accent-color */
+    border: 1px solid rgba(95, 158, 220, 0.2);
     backdrop-filter: blur(2px);
+    transition: all 0.2s ease;
 }
 
-/* Kategorie-spezifische Farben */
-.tool-category[data-category="website"] {
-    background-color: rgba(52, 152, 219, 0.5); /* Blau */
+/* Icon in der Kategorie etwas kleiner machen */
+.tool-category i {
+    font-size: 0.9em;
 }
 
-.tool-category[data-category="scripts"] {
-    background-color: rgba(46, 204, 113, 0.5); /* Grün */
+/* Hover-Effekt */
+.tool-category:hover {
+    background: rgba(95, 158, 220, 0.15);
+    border-color: rgba(95, 158, 220, 0.3);
+    transform: translateY(-1px);
 }
 
-.tool-category[data-category="portable"] {
-    background-color: rgba(155, 89, 182, 0.5); /* Lila */
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .tool-category {
+    background: rgba(95, 158, 220, 0.15);
+    border-color: rgba(95, 158, 220, 0.3);
+}
+
+[data-theme="dark"] .tool-category:hover {
+    background: rgba(95, 158, 220, 0.2);
+    border-color: rgba(95, 158, 220, 0.4);
 }
 
 .tool-location {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-color);
     margin-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.tool-location:hover {
+    opacity: 1;
+    background: rgba(95, 158, 220, 0.1);
+}
+
+.tool-location i {
+    font-size: 0.9em;
+    color: var(--accent-color);
 }
 
 .tool-actions {
@@ -251,6 +327,7 @@ input, select, textarea {
 .tool-website {
     font-size: 0.9rem;
     margin-bottom: 10px;
+        margin-left: 5px;
 }
 
 .tool-website a {
@@ -291,6 +368,7 @@ input, select, textarea {
     width: 90%;
     margin: 50px auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: background-color var(--theme-transition);
 }
 
 #toolForm {
@@ -316,6 +394,7 @@ input, select, textarea {
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
+    padding: 5px;
 }
 
 .tool-logo {
@@ -324,6 +403,14 @@ input, select, textarea {
     object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
+    padding: 4px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tool-title {
@@ -331,7 +418,9 @@ input, select, textarea {
 }
 
 .tool-title h3 {
-    margin-bottom: 5px;
+    margin: 0;
+    line-height: 1.3;
+    transition: color var(--theme-transition);
 }
 
 .header-left {
@@ -353,28 +442,65 @@ input, select, textarea {
 
 .footer {
     margin-top: 40px;
-    padding: 20px 0;
-    text-align: center;
+    padding: 20px;
     border-top: 1px solid var(--border-color);
-    color: var(--text-color);
-    font-size: 0.9rem;
+    text-align: center;
+    transition: all 0.3s ease;
 }
 
-.footer p {
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.social-links a {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
     opacity: 0.8;
 }
 
-.footer-text {
+.social-links a:hover {
+    color: var(--accent-color);
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.footer-bottom {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
+    color: var(--text-color);
+    opacity: 0.8;
 }
 
 .tool-count {
+    margin-right: 15px;
     color: var(--text-color);
-    opacity: 0.8;
-    font-size: 0.9rem;
+}
+
+/* Dark Mode Anpassungen für Footer */
+[data-theme="dark"] .footer {
+    border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .social-links a {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .social-links a:hover {
+    color: #A0D0F9;
+    opacity: 1;
+}
+
+[data-theme="dark"] .footer-bottom {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .tool-count {
+    color: #A0D0F9;
 }
 
 /* Neue Styles für den Titelbalken */
@@ -392,34 +518,37 @@ input, select, textarea {
     left: 0;
     right: 0;
     z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .titlebar-left {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding-left: 10px;
+    gap: 3px;
+    padding-left: 12px;
 }
 
 .titlebar-logo {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0) saturate(100%);
-}
-
-[data-theme="dark"] .titlebar-logo {
-    filter: brightness(0) saturate(100%) invert(1);
+    width: 30px;
+    height: 30px;
+    transition: all 0.3s ease;
+    /* Light Mode Logo Farbe - #2D5D8C */
+    filter: invert(36%) sepia(15%) saturate(1235%) hue-rotate(176deg) brightness(92%) contrast(89%);
 }
 
 .titlebar-title {
     font-size: 0.9rem;
-    color: var(--text-color);
+    color: var(--primary-color);
+    font-weight: 500;
+    opacity: 0.9;
+    letter-spacing: 0.3px;
+    transition: color var(--theme-transition);
 }
 
 .window-controls {
     -webkit-app-region: no-drag;
     display: flex;
-    gap: 0;
+    height: 100%;
 }
 
 .window-control {
@@ -428,30 +557,72 @@ input, select, textarea {
     padding: 0;
     color: var(--text-color);
     cursor: pointer;
-    transition: background-color 0.2s;
-    width: 45px;
+    transition: all 0.2s ease;
+    width: 46px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0.8;
 }
 
 .window-control:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
+    opacity: 1;
 }
 
 .window-control.close:hover {
     background-color: #e81123;
     color: white;
+    opacity: 1;
 }
 
-/* Anpassung für den Dark Mode */
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .titlebar {
+    background-color: var(--card-color);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .titlebar-logo {
+    /* Dark Mode Logo Farbe - Helles Blau */
+    filter: brightness(0) saturate(100%) invert(80%) sepia(40%) saturate(500%) hue-rotate(180deg);
+    opacity: 0.9;
+}
+
+[data-theme="dark"] .titlebar-title {
+    color: var(--primary-color);
+}
+
 [data-theme="dark"] .window-control:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .window-control.close:hover {
     background-color: #e81123;
+}
+
+[data-theme="dark"] .window-control {
+    color: #A0D0F9;
+}
+
+/* Hover Effekte */
+.titlebar-left:hover .titlebar-logo {
+    opacity: 1;
+    transform: scale(1.02);
+}
+
+.titlebar-left:hover .titlebar-title {
+    opacity: 1;
+}
+
+/* Window Control Icons */
+.window-control i {
+    font-size: 0.75rem;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Header Controls */
@@ -469,7 +640,7 @@ input, select, textarea {
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: none;
     outline: none;
 }
 
@@ -506,7 +677,7 @@ input, select, textarea {
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: none;
     width: 32px;
     height: 32px;
     display: flex;
@@ -630,16 +801,13 @@ input, select, textarea {
 }
 
 [data-theme="dark"] .modal-content {
-    background: var(--card-color);
+    background-color: var(--card-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
 [data-theme="dark"] .settings-section {
     background: var(--background-color);
-}
-
-/* Anpassung der Icon-Größe für bessere Konsistenz */
-.window-control i {
-    font-size: 12px;
 }
 
 /* Socials im Footer */
@@ -697,30 +865,80 @@ input, select, textarea {
     font-size: 0.9rem;
     color: var(--text-color);
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 20px;
-    transition: all 0.2s ease;
+    transition: none;
     min-width: 160px;
     font-weight: 500;
 }
 
-
-.category-option {
-    font-weight: 500;
-    padding: 8px 12px;
+#categoryFilter:hover {
+    border-color: var(--accent-color);
 }
 
 /* Dark Mode Anpassungen */
+[data-theme="dark"] .search-input-wrapper input {
+    background: var(--card-color);
+    border-color: #404040;
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .search-input-wrapper input:focus {
+    border-color: #A0D0F9;
+    box-shadow: 0 0 0 2px rgba(160, 208, 249, 0.1);
+}
+
+[data-theme="dark"] .search-icon {
+    color: #A0D0F9;
+}
+
 [data-theme="dark"] #categoryFilter {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-color: var(--card-color);
+    border-color: #404040;
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] #categoryFilter:hover {
+    border-color: #A0D0F9;
+}
+
+[data-theme="dark"] #categoryFilter option {
+    background-color: var(--card-color);
+    color: #A0D0F9;
+}
+
+/* Tag Filter Button */
+.tag-filter-btn {
+    height: 100%;
+    padding: 10px 15px;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: none;
+}
+
+.tag-filter-btn:hover {
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark"] .tag-filter-btn {
+    background: var(--card-color);
+    border-color: #404040;
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .tag-filter-btn:hover {
+    border-color: #A0D0F9;
 }
 
 .favorite-btn {
     background: none;
     border: none;
-    color: #ccc;
+    color: var(--border-color);
     font-size: 1.2rem;
     cursor: pointer;
     padding: 8px;
@@ -728,23 +946,43 @@ input, select, textarea {
     position: absolute;
     top: 10px;
     right: 10px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .favorite-btn:hover {
-    transform: scale(1.2);
+    color: var(--primary-color);
 }
 
 .favorite-btn.active {
-    color: #ffd700;
+    color: var(--primary-color);
 }
 
-/* Dark Mode Anpassung */
+/* Hover-Effekt für aktiven Stern */
+.favorite-btn.active:hover {
+    color: var(--border-color);
+}
+
+/* Dark Mode Anpassungen */
 [data-theme="dark"] .favorite-btn {
-    color: #666;
+    color: #404040;
+}
+
+[data-theme="dark"] .favorite-btn:hover {
+    color: #A0D0F9;
 }
 
 [data-theme="dark"] .favorite-btn.active {
-    color: #ffd700;
+    color: #A0D0F9;
+}
+
+/* Dark Mode Hover-Effekt für aktiven Stern */
+[data-theme="dark"] .favorite-btn.active:hover {
+    color: #404040;
 }
 
 /* Über Modal Styles */
@@ -826,7 +1064,7 @@ input, select, textarea {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 8px;
-    transition: all 0.2s ease;
+    transition: none;
     margin-right: 0;
 }
 
@@ -849,7 +1087,7 @@ input, select, textarea {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 8px;
-    transition: all 0.2s ease;
+    transition: none;
 }
 
 .header-controls button:hover {
@@ -864,7 +1102,7 @@ input, select, textarea {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 8px;
-    transition: all 0.2s ease;
+    transition: none;
 }
 
 .bug-report-btn:hover {
@@ -1010,7 +1248,7 @@ input, select, textarea {
     color: var(--text-color);
     font-family: inherit;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    transition: none;
 }
 
 .form-group select:focus,
@@ -1036,7 +1274,7 @@ input, select, textarea {
     padding: 15px;
     border-radius: var(--border-radius);
     border: 2px solid var(--border-color);
-    transition: all 0.2s ease;
+    transition: none;
     position: relative;
     z-index: 2;
 }
@@ -1073,7 +1311,7 @@ input, select, textarea {
     cursor: pointer;
     position: relative;
     background: var(--card-color);
-    transition: all 0.2s ease;
+    transition: none;
 }
 
 .form-group.checkbox-group input[type="checkbox"]:checked {
@@ -1120,7 +1358,7 @@ input, select, textarea {
     cursor: pointer;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
+    transition: none;
     margin-bottom: 40px;
 }
 
@@ -1160,54 +1398,129 @@ input, select, textarea {
     color: #666;
 }
 
+/* Verbesserte Tool-Tags */
 .tool-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 10px 0;
+    gap: 6px;
+    margin: 12px 0;
+    
 }
 
 .tool-tag {
-    background: var(--accent-color);
-    color: var(--text-color);
-    padding: 4px 8px;
+    font-size: 0.75rem;
+    padding: 4px 10px;
     border-radius: 12px;
-    font-size: 0.85em;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+    transition: none;
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    user-select: none;
+    outline: none;
+}
+
+.tool-tag::before {
+    content: '#';
+    opacity: 0.5;
+    font-size: 0.8em;
 }
 
 .tool-tag:hover {
+
+    color: rgb(255, 255, 255);
+
+    transform: translateY(-1px);
+}
+
+/* Einheitliches Tag-Design */
+.tool-tag[data-type] {
+    background: rgba(52, 152, 219, 0.1);
+    border-color: rgba(52, 152, 219, 0.2);
+}
+
+[data-theme="dark"] .tool-tag[data-type] {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
+
+/* Hover-Effekt für alle Tags */
+.tool-tag:hover,
+.tool-tag[data-type]:hover,
+[data-theme="dark"] .tool-tag[data-type]:hover {
+    color: rgb(0, 0, 0);
+    transform: translateY(-1px);
+}
+
+/* Aktive Filter Tags */
+.active-filters {
+    margin-bottom: 20px;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.selected-tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: var(--accent-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    outline: none;
+}
+
+.selected-tag button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    outline: none;
+}
+
+.selected-tag button:hover {
     opacity: 1;
 }
 
-.tool-counter {
-    font-size: 1rem;
-    color: var(--text-color);
-    opacity: 0.8;
-    font-size: 0.9rem;
-}
-
-.footer-bottom {
+/* Tag-Filter Dropdown Items */
+.tag-item {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 15px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: none;
+    outline: none;
+    margin-top: 10px;
 }
 
-.footer-bottom p {
-    margin: 0;
+.tag-item:hover {
+    background: var(--accent-color);
+    color: white;
 }
 
-.tool-counter {
-    color: var(--text-color);
-    opacity: 0.8;
-    font-size: 0.9rem;
+.tag-item.selected {
+    background: var(--accent-color);
+    color: white;
 }
 
-/* ...existing code... */
+.tag-item .tag-count {
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
 
 .history-modal {
     max-width: 600px;
@@ -1276,7 +1589,7 @@ input, select, textarea {
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .clear-history-btn:hover {
@@ -1289,7 +1602,7 @@ input, select, textarea {
 .about-section a {
     color: var(--accent-color);
     text-decoration: none;
-    transition: opacity 0.2s ease;
+    transition: none;
 }
 
 .about-section a:hover {
@@ -1303,7 +1616,7 @@ input, select, textarea {
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: none;
     background: var(--background-color);
     position: relative;
     min-height: 120px;
@@ -1323,7 +1636,7 @@ input, select, textarea {
     align-items: center;
     gap: 10px;
     padding: 10px;
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .upload-placeholder i {
@@ -1402,7 +1715,7 @@ input, select, textarea {
 
 .file-item .remove-file i {
     font-size: 0.9rem;
-    transition: transform 0.2s ease;
+    transition: none;
 }
 
 /* Toast Notification Styles */
@@ -1460,4 +1773,809 @@ input, select, textarea {
 .toast span {
     flex: 1;
     font-size: 0.95rem;
+}
+
+/* Tag Filter Styling */
+#tagFilter {
+    min-width: 200px;
+    height: 40px;
+    background: var(--card-color);
+}
+
+.tag-filter-container {
+    position: relative;
+    display: inline-block;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.selected-tag {
+    background: var(--accent-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.selected-tag button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Search Suggestions */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.search-suggestions.active {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Verbesserte Suchleiste */
+.search-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    opacity: 0.7;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    background: var(--card-color);
+    color: var(--text-color);
+    transition: none;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* Tag Filter Styling */
+.tag-filter-container {
+    position: relative;
+}
+
+.tag-filter-btn {
+    height: 100%;
+    padding: 10px 15px;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    min-width: 120px;
+}
+
+.tag-filter-btn:hover {
+    border-color: var(--accent-color);
+}
+
+.tag-filter-btn .selected-count {
+    background: var(--accent-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    display: none;
+}
+
+.tag-filter-btn .selected-count.active {
+    display: inline-block;
+}
+
+.tag-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    display: none;
+    z-index: 1000;
+}
+
+.tag-dropdown.active {
+    display: block;
+}
+
+.tag-search {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tag-search input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: border-color 0.2s ease;
+}
+
+.tag-search input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.tag-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: none;
+    outline: none;
+}
+
+.tag-item:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.tag-item.selected {
+    background: var(--accent-color);
+    color: white;
+}
+
+.tag-item .tag-count {
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.tag-actions {
+    padding: 10px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.clear-tags {
+    padding: 6px 12px;
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.clear-tags:hover {
+    background: var(--background-color);
+}
+
+/* Aktive Filter */
+.active-filters {
+    margin-bottom: 20px;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-tag {
+    background: var(--accent-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selected-tag button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.selected-tag button:hover {
+    opacity: 1;
+}
+
+/* Dark Mode Anpassungen für Header Controls */
+[data-theme="dark"] .header-controls button {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .header-controls button:hover {
+    color: #A0D0F9;
+    opacity: 1;
+}
+
+[data-theme="dark"] .bug-report-btn:hover {
+    color: #e74c3c;  /* Behalte die rote Farbe für den Bug-Report-Button */
+}
+
+.white-text {
+    color: black; /* Standardfarbe für Light Mode */
+}
+
+.white-text.dark-mode {
+    color: white; /* Farbe für Dark Mode */
+}
+
+/* Sidebar Styling Anpassung */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 32px; /* Höhe der Titlebar */
+    bottom: 0;
+    width: 180px; /* Von 220px auf 180px reduziert */
+    background: var(--card-color);
+    border-right: 1px solid var(--border-color);
+    padding: 20px 0;
+    transition: none;
+}
+
+.nav-item {
+    padding: 10px 15px; /* Padding reduziert */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: none;
+    opacity: 0.7;
+}
+
+.nav-item:hover {
+    background: var(--background-color);
+    opacity: 1;
+}
+
+.nav-item.active {
+    background: var(--background-color);
+    color: var(--accent-color);
+    opacity: 1;
+    border-right: 3px solid var(--accent-color);
+}
+
+.nav-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Container Anpassung */
+.container {
+    margin-left: 180px; /* Breite der Sidebar */
+    width: calc(100% - 180px);
+}
+
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .sidebar {
+    background: var(--card-color);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-item {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .nav-item:hover {
+    background: rgba(160, 208, 249, 0.1);
+}
+
+[data-theme="dark"] .nav-item.active {
+    background: rgba(160, 208, 249, 0.1);
+    color: #A0D0F9;
+    border-right-color: #A0D0F9;
+}
+
+/* Verbesserte Sidebar Controls */
+.sidebar-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    padding-bottom: 25px; /* Mehr Abstand am unteren Rand */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-color);
+    margin-bottom: 30px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    transition: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.7;
+    font-size: 0.9rem;
+    white-space: nowrap; /* Verhindert Zeilenumbruch */
+}
+
+.control-btn i {
+    font-size: 1.1rem;
+    min-width: 20px; /* Feste Mindestbreite für Icons */
+    text-align: center;
+}
+
+.control-btn::after {
+    content: attr(data-label);
+    font-size: 0.9rem;
+}
+
+/* Hover Effekte */
+.control-btn:not(#darkModeToggle):hover {
+    opacity: 1;
+    background: var(--background-color);
+    transform: translateX(3px);
+}
+
+/* Spezieller Hover-Effekt für darkModeToggle */
+#darkModeToggle:hover {
+    opacity: 1;
+    background: var(--background-color);
+}
+
+/* Entferne die spezielle Positionierung vom Theme Toggle */
+#darkModeToggle {
+    position: relative;
+    margin-top: 0; /* Entferne den zusätzlichen Abstand */
+}
+
+/* Entferne die Trennlinie */
+.sidebar-controls::before {
+    display: none; /* Verstecke die Trennlinie */
+}
+
+/* Dark Mode Anpassungen für Control Buttons */
+[data-theme="dark"] .control-btn {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .control-btn:hover {
+    background: rgba(160, 208, 249, 0.1);
+}
+
+#bugReportBtn:hover {
+    color: #e74c3c;
+}
+
+/* Scroll-to-top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--accent-color);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .scroll-to-top {
+    background: #A0D0F9;
+    color: #2D2D2D;
+}
+
+/* Tool Logo Styles - Basis */
+.tool-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    padding: 4px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark Mode Anpassungen - nur Farben ändern */
+[data-theme="dark"] .tool-logo {
+    background: #3d3d3d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover-Effekte - gleich für beide Modi */
+.tool-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Tool Header Layout anpassen */
+.tool-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+/* Bild-Größe erzwingen */
+.tool-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Loading Screen Styles */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--card-color);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.loading-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.loading-logo {
+    width: 120px;
+    height: 120px;
+    animation: pulse 2s infinite;
+    /* Light Mode Logo Farbe - #2D5D8C */
+    filter: invert(36%) sepia(15%) saturate(1235%) hue-rotate(176deg) brightness(92%) contrast(89%);
+    transition: filter var(--theme-transition);
+}
+
+.loading-text {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.loading-bar {
+    width: 200px;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.loading-progress {
+    width: 100%;
+    height: 100%;
+    background: var(--accent-color);
+    animation: loading 2s ease-in-out infinite;
+    transform-origin: left;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes loading {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(1); }
+    100% { transform: scaleX(0); }
+}
+
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .loading-screen {
+    background: var(--background-color);
+}
+
+[data-theme="dark"] .loading-logo {
+    filter: brightness(0) saturate(100%) invert(80%) sepia(40%) saturate(500%) hue-rotate(180deg);
+    transition: filter var(--theme-transition);
+}
+
+/* Autocomplete Dropdown Styling */
+.search-autocomplete {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: none;
+}
+
+.autocomplete-item:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .search-autocomplete {
+    background: var(--card-color);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .autocomplete-item:hover {
+    background: rgba(160, 208, 249, 0.2);
+    color: #A0D0F9;
+}
+
+/* Ergänze die Styles für den ausgewählten Vorschlag */
+.autocomplete-item.selected {
+    background: var(--accent-color);
+    color: white;
+}
+
+[data-theme="dark"] .autocomplete-item.selected {
+    background: rgba(160, 208, 249, 0.2);
+    color: #A0D0F9;
+}
+
+/* Spezifische Transitionen nur für wichtige Elemente */
+.tool-card,
+.modal-content,
+.sidebar,
+.titlebar,
+.loading-screen {
+    transition: background-color var(--theme-transition),
+                border-color var(--theme-transition);
+}
+
+/* Logos und Icons - nur Filter-Transition */
+.loading-logo,
+.titlebar-logo,
+.tool-logo {
+    transition: filter var(--theme-transition);
+}
+
+/* Text-Farben-Transition */
+.tool-title h3,
+.tool-description,
+.nav-item,
+.titlebar-title,
+.version-badge,
+.tool-location,
+.tool-tag {
+    transition: color var(--theme-transition);
+}
+
+/* Interaktive Elemente - nur relevante Eigenschaften */
+.control-btn,
+.nav-item,
+.tag-item,
+.tool-tag,
+.selected-tag {
+    transition: background-color var(--theme-transition),
+                color var(--theme-transition),
+                transform 0.2s ease;
+}
+
+/* Hover-spezifische Transitionen */
+.tool-logo:hover,
+.control-btn:hover,
+.nav-item:hover {
+    transition: transform 0.2s ease;
+}
+
+/* Entferne unnötige Transitionen */
+.container,
+.tools-grid,
+.footer,
+body,
+.tool-tags,
+.tool-actions,
+.social-links {
+    transition: none;
+}
+
+/* Optimiere Box-Shadow Transitionen */
+.tool-card,
+.modal-content {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Version Badge */
+.version-badge {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.75rem;
+    color: var(--text-color);
+    opacity: 0.5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(45, 93, 140, 0.1);
+    font-family: 'Segoe UI', monospace;
+    z-index: 100;
+    transition: opacity 0.2s ease;
+}
+
+.version-badge:hover {
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .version-badge {
+    background: rgba(160, 208, 249, 0.1);
+}
+
+/* Sidebar Icon Anpassungen */
+.nav-item[data-category="portable"] i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+/* Hover und Active Zustände - gleich wie bei anderen Icons */
+.nav-item[data-category="portable"]:hover {
+    background: var(--background-color);
+}
+
+.nav-item[data-category="portable"]:hover i {
+    opacity: 1;
+}
+
+.nav-item[data-category="portable"].active i {
+    opacity: 1;
+}
+
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .nav-item[data-category="portable"] i {
+    color: #A0D0F9;
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .nav-item[data-category="portable"]:hover {
+    background: rgba(160, 208, 249, 0.1);
+}
+
+[data-theme="dark"] .nav-item[data-category="portable"]:hover i,
+[data-theme="dark"] .nav-item[data-category="portable"].active i {
+    opacity: 1;
+}
+
+/* Tag Search Styling */
+.tag-search input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: border-color 0.2s ease;
+}
+
+.tag-search input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+/* Dark Mode Anpassungen */
+[data-theme="dark"] .tag-search input {
+    color: #A0D0F9;
+}
+
+[data-theme="dark"] .tag-search input:focus {
+    border-color: #A0D0F9;
 }

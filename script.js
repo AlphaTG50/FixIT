@@ -1,5 +1,8 @@
 class ToolManager {
     constructor() {
+        // Loading Screen sofort anzeigen
+        this.showLoadingScreen();
+        
         // Zuerst Tools und Favoriten laden
         this.initializeTools();
         this.loadFavorites();
@@ -20,16 +23,90 @@ class ToolManager {
         this.toolHistory = this.loadHistory();
         this.setupHistoryEventListeners();
         this.setupImageUpload();
+        
+        this.selectedTags = new Set();
+        this.initializeTagFilter();
+        this.setupTagFilterEvents();
+        
+        // Verbesserte Suche mit Debounce
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => this.filterTools(), 300);
+        });
+
+        this.initializeSynonyms();
+        this.setupSidebarEvents();
+        this.setupScrollToTop();
+        this.setupSearchAutocomplete();
+        this.updateVersionBadge();
+
+        // Loading Screen ausblenden nach Initialisierung
+        this.hideLoadingScreen();
+    }
+
+    initializeSynonyms() {
+        this.synonyms = {
+            // Netzwerk-bezogen
+            'netzwerk': ['network', 'lan', 'wlan', 'wifi', 'verbindung', 'internet'],
+            'wifi': ['wlan', 'wireless', 'funk', 'netzwerk'],
+            
+            // System & Hardware
+            'system': ['windows', 'betriebssystem', 'os', 'computer'],
+            'hardware': ['komponenten', 'gerät', 'geräte', 'ausstattung'],
+            'cpu': ['prozessor', 'processor', 'rechner'],
+            'gpu': ['grafikkarte', 'graphics', 'grafik'],
+            'festplatte': ['hdd', 'ssd', 'speicher', 'storage', 'laufwerk'],
+            
+            // Sicherheit
+            'sicherheit': ['security', 'schutz', 'protection', 'antivirus'],
+            'virus': ['malware', 'schadsoftware', 'trojaner', 'spyware'],
+            'firewall': ['brandmauer', 'schutzwall'],
+            
+            // Diagnose & Analyse
+            'diagnose': ['analyse', 'test', 'prüfung', 'check'],
+            'monitoring': ['überwachung', 'beobachtung', 'kontrolle'],
+            'leistung': ['performance', 'geschwindigkeit', 'speed'],
+            
+            // Dateien & Ordner
+            'datei': ['file', 'dokument', 'document'],
+            'ordner': ['folder', 'verzeichnis', 'directory'],
+            
+            // Tools & Programme
+            'software': ['programm', 'anwendung', 'app', 'tool'],
+            'tool': ['werkzeug', 'hilfsmittel', 'utility'],
+            
+            // Email & Kommunikation
+            'email': ['mail', 'e-mail', 'post'],
+            'kommunikation': ['chat', 'messaging', 'nachricht'],
+            
+            // Reinigung & Optimierung
+            'reinigung': ['cleaner', 'säuberung', 'bereinigung', 'cleanup'],
+            'optimierung': ['tuning', 'verbesserung', 'optimization'],
+            
+            // Verschiedenes
+            'backup': ['sicherung', 'kopie', 'reserve'],
+            'update': ['aktualisierung', 'upgrade', 'patch'],
+            'treiber': ['driver', 'gerätetreiber'],
+            'remote': ['fern', 'entfernt', 'remote-zugriff']
+        };
+
+        // Reverse-Mapping für bessere Suche
+        this.searchTerms = new Map();
+        
+        for (const [main, synonymsList] of Object.entries(this.synonyms)) {
+            // Hauptbegriff zu sich selbst mappen
+            this.searchTerms.set(main, main);
+            
+            // Synonyme zum Hauptbegriff mappen
+            for (const synonym of synonymsList) {
+                this.searchTerms.set(synonym.toLowerCase(), main);
+            }
+        }
     }
 
     setupEventListeners() {
         document.getElementById('searchInput').addEventListener('input', () => {
-            this.filterTools();
-        });
-        
-        const categoryFilter = document.getElementById('categoryFilter');
-        categoryFilter.innerHTML = this.getCategoryOptions();
-        categoryFilter.addEventListener('change', () => {
             this.filterTools();
         });
         
@@ -88,6 +165,7 @@ class ToolManager {
                 id: '1',
                 name: 'Everything',
                 category: 'portable',
+                tags: ['suche', 'dateien', 'windows'],
                 location: {
                     portable: 'resources/executable/everything.exe',
                 },
@@ -99,6 +177,7 @@ class ToolManager {
                 id: '2',
                 name: 'HiBit SystemInfo',
                 category: 'portable',
+                tags: ['system', 'hardware', 'diagnose'],
                 location: {
                     portable: 'resources/executable/hibitsysteminfo.exe',
                 },
@@ -110,6 +189,7 @@ class ToolManager {
                 id: '3',
                 name: 'HiBit Uninstaller',
                 category: 'portable',
+                tags: ['system', 'reinigung', 'software'],
                 location: {
                     portable: 'resources/executable/hibituninstaller.exe',
                 },
@@ -121,6 +201,7 @@ class ToolManager {
                 id: '4',
                 name: 'HWiNFO',
                 category: 'portable',
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/hwinfo.exe',
                 },
@@ -132,6 +213,7 @@ class ToolManager {
                 id: '5',
                 name: 'ChatGPT',
                 category: 'website',
+                tags: ['ki', 'chat', 'hilfe'],
                 location: {
                     portable: 'https://chat.openai.com',
                 },
@@ -143,6 +225,7 @@ class ToolManager {
                 id: '6',
                 name: 'Terminator',
                 category: 'website',
+                tags: ['virtualisierung', 'windows', 'linux'],
                 location: {
                     portable: 'https://terminator.aeza.net/en/',
                 },
@@ -154,6 +237,7 @@ class ToolManager {
                 id: '7',
                 name: 'VirusTotal',
                 category: 'website',
+                tags: ['sicherheit', 'malware', 'scan'],
                 location: {
                     portable: 'https://www.virustotal.com',
                 },
@@ -165,6 +249,7 @@ class ToolManager {
                 id: '8',
                 name: 'TreeSize Free',
                 category: 'portable',
+                tags: ['speicher', 'analyse', 'dateien'],
                 location: {
                     portable: 'resources/executable/treesizefree.exe',
                 },
@@ -176,6 +261,7 @@ class ToolManager {
                 id: '10',
                 name: 'LastPass Generator',
                 category: 'website',
+                tags: ['passwort', 'sicherheit', 'generator'],
                 location: {
                     portable: 'https://www.lastpass.com/features/password-generator',
                 },
@@ -187,6 +273,7 @@ class ToolManager {
                 id: '11',
                 name: 'Encycolorpedia',
                 category: 'website',
+                tags: ['farben', 'design', 'konverter'],
                 location: {
                     portable: 'https://encycolorpedia.com',
                 },
@@ -198,6 +285,7 @@ class ToolManager {
                 id: '12',
                 name: 'Play with Docker',
                 category: 'website',
+                tags: ['docker', 'container', 'entwicklung'],
                 location: {
                     portable: 'https://labs.play-with-docker.com',
                 },
@@ -209,6 +297,7 @@ class ToolManager {
                 id: '13',
                 name: 'RegExr',
                 category: 'website',
+                tags: ['regex', 'entwicklung', 'text'],
                 location: {
                     portable: 'https://regexr.com',
                 },
@@ -220,6 +309,7 @@ class ToolManager {
                 id: '14',
                 name: 'Browser Privacy Check',
                 category: 'website',
+                tags: ['privacy', 'browser', 'sicherheit'],
                 location: {
                     portable: 'https://www.experte.de/browser-privacy-check',
                 },
@@ -231,6 +321,7 @@ class ToolManager {
                 id: '15',
                 name: 'RAID Calculator',
                 category: 'website',
+                tags: ['speicher', 'raid', 'server'],
                 location: {
                     portable: 'https://www.synology.com/de-de/support/RAID_calculator',
                 },
@@ -242,6 +333,7 @@ class ToolManager {
                 id: '16',
                 name: 'Can You RUN It',
                 category: 'website',
+                tags: ['gaming', 'hardware', 'kompatibilität'],
                 location: {
                     portable: 'https://www.systemrequirementslab.com/cyri',
                 },
@@ -253,6 +345,7 @@ class ToolManager {
                 id: '17',
                 name: 'CrackStation',
                 category: 'website',
+                tags: ['passwort', 'hash', 'sicherheit'],
                 location: {
                     portable: 'https://crackstation.net',
                 },
@@ -264,6 +357,7 @@ class ToolManager {
                 id: '18',
                 name: 'NameChk',
                 category: 'website',
+                tags: ['username', 'social', 'verfügbarkeit'],
                 location: {
                     portable: 'https://namechk.com',
                 },
@@ -275,6 +369,7 @@ class ToolManager {
                 id: '19',
                 name: 'PCPartPicker',
                 category: 'website',
+                tags: ['hardware', 'pc-bau', 'kompatibilität'],
                 location: {
                     portable: 'https://pcpartpicker.com',
                 },
@@ -286,6 +381,7 @@ class ToolManager {
                 id: '20',
                 name: 'Alle Störungen',
                 category: 'website',
+                tags: ['status', 'dienste', 'monitoring'],
                 location: {
                     portable: 'https://xn--allestrungen-9ib.de',
                 },
@@ -297,6 +393,7 @@ class ToolManager {
                 id: '21',
                 name: 'GPU-Z',
                 category: 'portable',
+                tags: ['grafikkarte', 'hardware', 'monitoring'],
                 location: {
                     portable: 'resources/executable/gpuz.exe',
                 },
@@ -308,6 +405,7 @@ class ToolManager {
                 id: '22',
                 name: 'CPU-Z',
                 category: 'portable',
+                tags: ['prozessor', 'hardware', 'monitoring'],
                 location: {
                     portable: 'resources/executable/cpuz.exe',
                 },
@@ -319,6 +417,7 @@ class ToolManager {
                 id: '23',
                 name: 'HWMonitor',
                 category: 'portable',
+                tags: ['hardware', 'temperatur', 'monitoring'],
                 location: {
                     portable: 'resources/executable/hwmonitor.exe',
                 },
@@ -330,6 +429,7 @@ class ToolManager {
                 id: '24',
                 name: 'HeavyLoad',
                 category: 'portable',
+                tags: ['stresstest', 'hardware', 'leistung'],
                 location: {
                     portable: 'resources/executable/heavyload.exe',
                 },
@@ -341,6 +441,7 @@ class ToolManager {
                 id: '25',
                 name: 'BatteryInfoView',
                 category: 'portable',
+                tags: ['akku', 'hardware', 'diagnose'],
                 location: {
                     portable: 'resources/executable/batteryinfoview.exe',
                 },
@@ -352,6 +453,7 @@ class ToolManager {
                 id: '26',
                 name: 'Core Temp',
                 category: 'portable',
+                tags: ['temperatur', 'cpu', 'monitoring'],
                 location: {
                     portable: 'resources/executable/coretemp.exe',
                 },
@@ -363,6 +465,7 @@ class ToolManager {
                 id: '27',
                 name: 'LastActivityView',
                 category: 'portable',
+                tags: ['system', 'aktivität', 'protokoll'],
                 location: {
                     portable: 'resources/executable/lastactivityview.exe',
                 },
@@ -374,8 +477,9 @@ class ToolManager {
                 id: '28',
                 name: 'Wireless Network Watcher',
                 category: 'portable',
+                tags: ['netzwerk', 'wlan', 'monitoring'],
                 location: {
-                    portable: 'resources/executable/wnwatcher.exe',
+                    portable: 'resources/executable/wnetwatcher.exe',
                 },
                 website: 'https://www.nirsoft.net/utils/wireless_network_watcher.html',
                 description: 'Zeigt alle Geräte, die mit einem WLAN-Netzwerk verbunden sind',
@@ -385,6 +489,7 @@ class ToolManager {
                 id: '29',
                 name: 'Advanced IP Scanner',
                 category: 'portable',
+                tags: ['netzwerk', 'scan', 'ip'],
                 location: {
                     portable: 'resources/executable/advancedipscanner.exe',
                 },
@@ -396,8 +501,9 @@ class ToolManager {
                 id: '30',
                 name: 'System Information for Windows',
                 category: 'portable',
+                tags: ['system', 'hardware', 'diagnose'],
                 location: {
-                    portable: 'resources/executable/siw64.exe',
+                    portable: 'resources/executable/siw.exe',
                 },
                 website: 'https://www.gtopala.com/',
                 description: 'Erweiterte Systeminformationen und Hardware-Analyse ',
@@ -407,6 +513,7 @@ class ToolManager {
                 id: '31',
                 name: 'URLscan.io',
                 category: 'website',
+                tags: ['sicherheit', 'url', 'analyse'],
                 location: {
                     portable: 'https://urlscan.io/',
                 },
@@ -418,6 +525,7 @@ class ToolManager {
                 id: '32',
                 name: 'Snapdrop',
                 category: 'website',
+                tags: ['dateitransfer', 'wlan', 'sharing'],
                 location: {
                     portable: 'https://snapdrop.net/',
                 },
@@ -429,6 +537,7 @@ class ToolManager {
                 id: '33',
                 name: 'Send Anywhere',
                 category: 'website',
+                tags: ['dateitransfer', 'sharing', 'cloud'],
                 location: {
                     portable: 'https://send-anywhere.com/',
                 },
@@ -440,6 +549,7 @@ class ToolManager {
                 id: '34',
                 name: 'SwissTransfer',
                 category: 'website',
+                tags: ['dateitransfer', 'sicherheit', 'cloud'],
                 location: {
                     portable: 'https://www.swisstransfer.com/',
                 },
@@ -451,6 +561,7 @@ class ToolManager {
                 id: '35',
                 name: 'Google Phishing Quiz',
                 category: 'website',
+                tags: ['sicherheit', 'phishing', 'training'],
                 location: {
                     portable: 'https://phishingquiz.withgoogle.com/',
                 },
@@ -462,21 +573,23 @@ class ToolManager {
                 id: '36',
                 name: 'Send Test Email',
                 category: 'website',
+                tags: ['email', 'test', 'diagnose'],
                 location: {
-                    portable: 'https://sendtestemail.com/?act=send-test-email',
+                    portable: 'https://www.sendtestmail.com/',
                 },
-                website: 'https://sendtestemail.com/?act=send-test-email',
+                website: 'https://www.sendtestmail.com/',
                 description: 'Versende Test-E-Mails zur Überprüfung von SMTP-Konfigurationen',
-                logo: 'https://sendtestemail.com/favicon.ico'
+                logo: 'https://cdn-icons-png.flaticon.com/512/12440/12440463.png'
             },
             {
                 id: '37',
                 name: 'Guerrilla Mail Tools',
                 category: 'website',
+                tags: ['email', 'temporär', 'privatsphäre'],
                 location: {
-                    portable: 'https://www.guerrillamail.com/tools',
+                    portable: 'https://www.guerrillamail.com/',
                 },
-                website: 'https://www.guerrillamail.com/tools',
+                website: 'https://www.guerrillamail.com/',
                 description: 'Werkzeuge für temporäre E-Mails und Anonymität im Netz',
                 logo: 'https://www.guerrillamail.com/favicon.ico'
             },
@@ -484,6 +597,7 @@ class ToolManager {
                 id: '38',
                 name: 'Müllmail',
                 category: 'website',
+                tags: ['email', 'temporär', 'privatsphäre'],
                 location: {
                     portable: 'https://muellmail.com/',
                 },
@@ -495,6 +609,7 @@ class ToolManager {
                 id: '39',
                 name: 'DNSChecker - All Tools',
                 category: 'website',
+                tags: ['netzwerk', 'dns', 'diagnose'],
                 location: {
                     portable: 'https://dnschecker.org/all-tools.php',
                 },
@@ -506,6 +621,7 @@ class ToolManager {
                 id: '40',
                 name: 'Eat This Much',
                 category: 'website',
+                tags: ['ernährung', 'planung', 'gesundheit'],
                 location: {
                     portable: 'https://www.eatthismuch.com/',
                 },
@@ -517,6 +633,7 @@ class ToolManager {
                 id: '41',
                 name: 'Omni Calculator',
                 category: 'website',
+                tags: ['rechner', 'konverter', 'tools'],
                 location: {
                     portable: 'https://www.omnicalculator.com/',
                 },
@@ -528,14 +645,86 @@ class ToolManager {
                 id: '42',
                 name: 'Date Night Movies',
                 category: 'website',
+                tags: ['filme', 'unterhaltung', 'empfehlungen'],
                 location: {
                     portable: 'https://datenightmovies.com/',
                 },
                 website: 'https://datenightmovies.com/',
                 description: 'Empfiehlt Filme basierend auf den Vorlieben von zwei Personen',
                 logo: 'https://datenightmovies.com/favicon.ico'
-            }
-            
+            },
+            {
+                id: '43',
+                name: 'Wireshark',
+                category: 'portable',
+                tags: ['netzwerk', 'analyse', 'monitoring'],
+                location: {
+                    portable: 'resources/executable/wireshark.exe'
+                },
+                website: 'https://www.wireshark.org/',
+                description: 'Ein Open-Source-Netzwerkprotokoll-Analysator zur Überwachung und Analyse von Netzwerkverkehr.',
+                logo: 'https://i.imgur.com/V6FWrVG.png'
+            },
+            {
+                id: '44',
+                name: 'UniGetUI',
+                category: 'portable',
+                tags: ['paketmanager', 'software', 'installation'],
+                location: {
+                    portable: 'resources/executable/unigetui.exe'
+                },
+                website: 'https://github.com/goldenrithe/UniGetUI',
+                description: 'Ein moderner Paketmanager für Windows mit Unterstützung für Chocolatey, Scoop und WinGet.',
+                logo: 'https://store-images.s-microsoft.com/image/apps.24154.13516705259293103.17a2615c-0b9b-4b1b-ac77-f7377924d858.f82c2401-fef7-4d77-b4bd-188130de33fe?h=210'
+            },
+            {
+                id: '45',
+                name: 'Attribute Changer',
+                category: 'portable',
+                tags: ['dateien', 'attribute', 'system'],
+                location: {
+                    portable: 'resources/executable/attributechanger.exe'
+                },
+                website: 'https://www.petges.lu/home/',
+                description: 'Ein Windows-Tool zum Ändern von Datei- und Ordnerattributen, Zeitstempeln und weiteren Eigenschaften.',
+                logo: 'https://imgur.com/HkrIZ18.png'
+            },
+            {
+                id: '46',
+                name: 'Enigma Virtual Box',
+                category: 'portable',
+                tags: ['virtualisierung', 'software', 'portabilität'],
+                location: {
+                    portable: 'resources/executable/engimavb.exe'
+                },
+                website: 'https://enigmaprotector.com/en/aboutvb.html',
+                description: 'Ein Tool zur Virtualisierung von Anwendungen, das alle Dateien in einer einzigen ausführbaren Datei bündelt.',
+                logo: 'https://imgur.com/vkRgmTY.png'
+            },
+            {
+                id: '47',
+                name: 'Imgur Upload',
+                category: 'website',
+                tags: ['bilder', 'upload', 'sharing'],
+                location: {
+                    portable: 'https://imgur.com/upload'
+                },
+                website: 'https://imgur.com/upload',
+                description: 'Ein einfacher und schneller Bild-Upload-Dienst für das Teilen von Bildern online.',
+                logo: 'https://imgur.com/favicon.ico'
+            },
+            {
+                id: '48',
+                name: 'Microsoft Activation',
+                category: 'scripts',
+                tags: ['windows', 'aktivierung', 'lizenz'],
+                location: {
+                    portable: 'resources/executable/microsoft-activation.ps1'
+                },
+                website: 'https://github.com/massgravel/Microsoft-Activation-Scripts',
+                description: 'Aktiviert Microsoft Windows und Office Produkte mit digitaler Lizenz.',
+                logo: 'https://avatars.githubusercontent.com/u/59795046?v=4'
+            },
         ];
     }
 
@@ -543,6 +732,10 @@ class ToolManager {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.updateThemeIcon(savedTheme);
+        
+        const titleText = document.querySelector('.white-text');
+        titleText.classList.toggle('dark-mode', savedTheme === 'dark');
+        titleText.classList.toggle('light-mode', savedTheme === 'light');
     }
 
     toggleTheme() {
@@ -552,11 +745,23 @@ class ToolManager {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         this.updateThemeIcon(newTheme);
+        
+        const titleText = document.querySelector('.white-text');
+        titleText.classList.toggle('dark-mode', newTheme === 'dark');
+        titleText.classList.toggle('light-mode', newTheme === 'light');
     }
 
     updateThemeIcon(theme) {
         const icon = document.querySelector('#darkModeToggle i');
-        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        const button = document.querySelector('#darkModeToggle');
+        
+        if (theme === 'dark') {
+            icon.className = 'fas fa-sun';
+            button.setAttribute('data-label', 'Lightmode');
+        } else {
+            icon.className = 'fas fa-moon';
+            button.setAttribute('data-label', 'Darkmode');
+        }
     }
 
     showModal(tool = null) {
@@ -635,19 +840,36 @@ class ToolManager {
 
     filterTools() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const categoryFilter = document.getElementById('categoryFilter').value;
-
-        // Filtere die Tools
+        const activeCategory = document.querySelector('.nav-item.active').dataset.category;
+        
         const filteredTools = this.tools.filter(tool => {
-            const matchesSearch = tool.name.toLowerCase().includes(searchTerm) ||
-                                tool.description.toLowerCase().includes(searchTerm);
-            const matchesCategory = !categoryFilter || tool.category === categoryFilter;
-            return matchesSearch && matchesCategory;
+            // Prüfe zuerst die Kategorie
+            if (activeCategory !== 'all' && tool.category !== activeCategory) {
+                return false;
+            }
+
+            // Dann prüfe die Suche
+            const matchesSearch = this.matchesSearchTerm(tool, searchTerm);
+            const matchesTags = this.selectedTags.size === 0 || 
+                (tool.tags && Array.from(this.selectedTags).every(tag => tool.tags.includes(tag)));
+
+            return matchesSearch && matchesTags;
         });
 
-        // Aktualisiere currentFilteredTools und rendere
         this.currentFilteredTools = filteredTools;
         this.renderTools(this.currentFilteredTools);
+        
+        const toolCounter = document.getElementById('toolCounter');
+        if (toolCounter) {
+            toolCounter.textContent = `${filteredTools.length} Tools gefunden`;
+        }
+    }
+
+    matchesSearchTerm(tool, searchTerm) {
+        if (!searchTerm) return true;
+        
+        // Suche nur im Tool-Namen
+        return tool.name.toLowerCase().includes(searchTerm.toLowerCase());
     }
 
     launchTool(location) {
@@ -662,7 +884,14 @@ class ToolManager {
         }
         
         try {
-            window.electronAPI.launchTool(location);
+            // Wenn es eine URL oder mailto ist, direkt öffnen
+            if (location.startsWith('http') || location.startsWith('mailto:')) {
+                window.electronAPI.launchTool(location);
+            } 
+            // Wenn es ein lokales Tool ist
+            else {
+                window.electronAPI.launchTool(location);
+            }
         } catch (error) {
             console.error('Fehler beim Starten des Tools:', error);
             alert('Das Tool konnte nicht gestartet werden.');
@@ -678,8 +907,14 @@ class ToolManager {
             return;
         }
 
+        // Aktuelle Kategorie berücksichtigen
+        const activeCategory = document.querySelector('.nav-item.active').dataset.category;
+        const filteredTools = activeCategory === 'all' 
+            ? toolsToRender 
+            : toolsToRender.filter(tool => tool.category === activeCategory);
+
         // Sortiere Tools (Favoriten zuerst)
-        const sortedTools = [...toolsToRender].sort((a, b) => {
+        const sortedTools = [...filteredTools].sort((a, b) => {
             const aIsFav = this.favorites.has(a.id);
             const bIsFav = this.favorites.has(b.id);
             if (aIsFav === bIsFav) {
@@ -729,6 +964,41 @@ class ToolManager {
                 </div>
             `;
 
+            let toolTags = '';
+            if (tool.tags && tool.tags.length > 0) {
+                toolTags = `<div class="tool-tags">`;
+                tool.tags.forEach(tag => {
+                    // Bestimme den Tag-Typ für das Styling
+                    let tagType = this.getTagType(tag);
+                    toolTags += `
+                        <span class="tool-tag" 
+                              data-type="${tagType}" 
+                              onclick="toolManager.filterByTag('${tag}')"
+                              title="Nach '${tag}' filtern">
+                            ${tag}
+                        </span>`;
+                });
+                toolTags += `</div>`;
+            }
+
+            const locationHtml = tool.category === 'website' 
+                ? `
+                    <div class="tool-location" onclick="toolManager.launchTool('${tool.location.portable}')">
+                        <i class="fas fa-link"></i> ${tool.location.portable}
+                    </div>
+                ` 
+                : tool.location.portable.startsWith('http') 
+                    ? `
+                        <div class="tool-location" onclick="toolManager.launchTool('${tool.location.portable}')">
+                            <i class="fas fa-link"></i> ${tool.location.portable}
+                        </div>
+                    `
+                    : `
+                        <div class="tool-location">
+                            <i class="fas fa-folder"></i> ${tool.location.portable}
+                        </div>
+                    `;
+
             toolCard.innerHTML = `
                 <div class="tool-header">
                     <img src="${tool.logo}" alt="${tool.name} logo" class="tool-logo">
@@ -737,17 +1007,18 @@ class ToolManager {
                     </div>
                     ${favoriteButton}
                 </div>
-                <div class="tool-category" data-category="${tool.category}">
-                    <i class="fas ${this.getCategoryIcon(tool.category)}"></i> 
-                    ${this.getCategoryName(tool.category)}
-                </div>
+                ${activeCategory === 'all' ? `
+                    <div class="tool-category" data-category="${tool.category}">
+                        <i class="fas ${this.getCategoryIcon(tool.category)}"></i> 
+                        ${this.getCategoryName(tool.category)}
+                    </div>
+                ` : ''}
                 <div class="tool-actions">
                     ${actionButtons}
                 </div>
                 ${websiteLink}
-                <div class="tool-location">
-                    <i class="fas fa-folder"></i> ${tool.location.portable || tool.location.install}
-                </div>
+                ${toolTags}
+                ${locationHtml}
                 <p>${tool.description}</p>
             `;
             
@@ -773,7 +1044,7 @@ class ToolManager {
             </div>
             <div class="footer-bottom">
                 <div class="footer-text">
-                    <span class="tool-count">Anzahl der Tools: ${toolsToRender.length}</span>
+                    <span class="tool-count">Anzahl der Tools: ${sortedTools.length}</span>
                     <p>© 2024 HelpIT - Alle Rechte vorbehalten</p>
                 </div>
             </div>
@@ -796,15 +1067,6 @@ class ToolManager {
             portable: 'Portable'
         };
         return names[category] || category;
-    }
-
-    getCategoryOptions() {
-        return `
-            <option value="">Alle Kategorien</option>
-            <option value="website">Website</option>
-            <option value="scripts">Skripts</option>
-            <option value="portable">Portable</option>
-        `;
     }
 
     setupWindowControls() {
@@ -1136,6 +1398,393 @@ class ToolManager {
             };
             reader.readAsDataURL(file);
         });
+    }
+
+    getAllTags() {
+        const tagsSet = new Set();
+        this.tools.forEach(tool => {
+            if (tool.tags) {
+                tool.tags.forEach(tag => tagsSet.add(tag));
+            }
+        });
+        return Array.from(tagsSet).sort();
+    }
+
+    initializeTagFilter() {
+        this.updateTagList();
+    }
+
+    getAllTagsWithCount() {
+        const tagCount = {};
+        const activeCategory = document.querySelector('.nav-item.active').dataset.category;
+        
+        this.tools.forEach(tool => {
+            // Prüfe zuerst, ob das Tool zur aktiven Kategorie gehört
+            if (activeCategory === 'all' || tool.category === activeCategory) {
+                if (tool.tags) {
+                    tool.tags.forEach(tag => {
+                        tagCount[tag] = (tagCount[tag] || 0) + 1;
+                    });
+                }
+            }
+        });
+
+        // Konvertiere zu Array und sortiere
+        const tagArray = Object.entries(tagCount)
+            .map(([tag, count]) => ({
+                tag,
+                count,
+                isSelected: this.selectedTags.has(tag)
+            }));
+
+        // Sortiere: Ausgewählte Tags zuerst, dann nach Häufigkeit
+        return tagArray.sort((a, b) => {
+            if (a.isSelected !== b.isSelected) {
+                return a.isSelected ? -1 : 1;
+            }
+            return b.count - a.count;
+        });
+    }
+
+    setupTagFilterEvents() {
+        const tagFilterBtn = document.getElementById('tagFilterBtn');
+        const tagDropdown = document.querySelector('.tag-dropdown');
+        const tagSearch = document.querySelector('.tag-search input');
+        const clearTagsBtn = document.querySelector('.clear-tags');
+
+        // Tag Filter Button
+        tagFilterBtn.addEventListener('click', () => {
+            tagDropdown.classList.toggle('active');
+        });
+
+        // Schließen wenn außerhalb geklickt wird, aber nicht bei Klicks innerhalb des Dropdowns
+        document.addEventListener('click', (e) => {
+            // Prüfe ob der Klick außerhalb des Tag-Filters und Dropdowns war
+            const isOutsideClick = !e.target.closest('.tag-filter-container') && 
+                                 !e.target.closest('.tag-dropdown') &&
+                                 !e.target.closest('.tag-item');
+            
+            if (isOutsideClick) {
+                tagDropdown.classList.remove('active');
+            }
+        });
+
+        // Tag Suche
+        tagSearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const tagItems = document.querySelectorAll('.tag-item');
+            tagItems.forEach(item => {
+                const tag = item.textContent.toLowerCase();
+                item.style.display = tag.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+
+        // Tags zurücksetzen
+        clearTagsBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Verhindert das Schließen des Dropdowns
+            this.selectedTags.clear();
+            this.updateTagList();
+            this.updateSelectedTags();
+            this.filterTools();
+        });
+    }
+
+    updateSelectedTags() {
+        const selectedTagsContainer = document.querySelector('.selected-tags');
+        const selectedCount = document.querySelector('.selected-count');
+        
+        // Update selected tags display
+        selectedTagsContainer.innerHTML = Array.from(this.selectedTags).map(tag => `
+            <div class="selected-tag">
+                <span>${tag}</span>
+                <button onclick="toolManager.removeTag('${tag}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+
+        // Update count badge
+        if (this.selectedTags.size > 0) {
+            selectedCount.textContent = this.selectedTags.size;
+            selectedCount.classList.add('active');
+        } else {
+            selectedCount.classList.remove('active');
+        }
+    }
+
+    removeTag(tag) {
+        this.selectedTags.delete(tag);
+        this.updateTagList();
+        this.updateSelectedTags();
+        this.filterTools();
+    }
+
+    filterByTag(tag) {
+        // Füge den Tag zu den ausgewählten Tags hinzu
+        this.selectedTags.add(tag);
+        
+        // Aktualisiere die Tag-Anzeige und die gefilterten Tools
+        this.updateTagList();
+        this.updateSelectedTags();
+        this.filterTools();
+        
+        // Optional: Scrolle nach oben, damit der Benutzer die gefilterten Ergebnisse sieht
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    getTagType(tag) {
+        const hardwareTags = ['hardware', 'cpu', 'gpu', 'grafikkarte', 'prozessor', 'akku', 'temperatur'];
+        const softwareTags = ['software', 'entwicklung', 'installation', 'portabilität', 'tools'];
+        const securityTags = ['sicherheit', 'privacy', 'malware', 'phishing', 'scan'];
+        const networkTags = ['netzwerk', 'wlan', 'ip', 'dns'];
+        const systemTags = ['system', 'monitoring', 'diagnose', 'analyse'];
+
+        if (hardwareTags.includes(tag)) return 'hardware';
+        if (softwareTags.includes(tag)) return 'software';
+        if (securityTags.includes(tag)) return 'security';
+        if (networkTags.includes(tag)) return 'network';
+        if (systemTags.includes(tag)) return 'system';
+        return 'default';
+    }
+
+    updateTagList() {
+        const tagList = document.querySelector('.tag-list');
+        const tags = this.getAllTagsWithCount();
+        
+        tagList.innerHTML = tags.map(({tag, count, isSelected}) => `
+            <div class="tag-item ${isSelected ? 'selected' : ''}" data-tag="${tag}">
+                <span>${tag}</span>
+                <span class="tag-count">${count}</span>
+            </div>
+        `).join('');
+
+        // Event-Listener neu hinzufügen
+        const tagItems = document.querySelectorAll('.tag-item');
+        tagItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const tag = item.dataset.tag;
+                if (this.selectedTags.has(tag)) {
+                    this.selectedTags.delete(tag);
+                    item.classList.remove('selected');
+                } else {
+                    this.selectedTags.add(tag);
+                    item.classList.add('selected');
+                }
+                this.updateSelectedTags();
+                this.updateTagList(); // Liste neu sortieren
+                this.filterTools();
+            });
+        });
+    }
+
+    setupSidebarEvents() {
+        const sidebarItems = document.querySelectorAll('.nav-item');
+        const searchInput = document.getElementById('searchInput');
+        
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Aktiven Status aktualisieren
+                sidebarItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Suchfeld und Tags zurücksetzen
+                searchInput.value = '';
+                this.selectedTags.clear();
+                
+                // Tag-Liste aktualisieren und neu rendern
+                this.updateTagList();
+                this.updateSelectedTags();
+                
+                // Tools filtern
+                const category = item.dataset.category;
+                if (category === 'all') {
+                    this.filterTools();
+                } else {
+                    const filteredTools = this.tools.filter(tool => tool.category === category);
+                    this.renderTools(filteredTools);
+                }
+            });
+        });
+    }
+
+    setupScrollToTop() {
+        const scrollBtn = document.getElementById('scrollToTop');
+        const container = document.querySelector('.container');
+        
+        container.addEventListener('scroll', () => {
+            if (container.scrollTop > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        
+        scrollBtn.addEventListener('click', () => {
+            container.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    setupSearchAutocomplete() {
+        const searchInput = document.getElementById('searchInput');
+        const container = document.querySelector('.search-input-wrapper');
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'search-autocomplete';
+        container.appendChild(dropdown);
+        
+        let selectedIndex = -1;
+        
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value.toLowerCase().trim();
+            selectedIndex = -1; // Reset selection bei neuer Eingabe
+            
+            if (!value) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const activeCategory = document.querySelector('.nav-item.active').dataset.category;
+            const categoryTools = activeCategory === 'all' 
+                ? this.tools 
+                : this.tools.filter(tool => tool.category === activeCategory);
+
+            const suggestions = categoryTools
+                .map(tool => {
+                    const name = tool.name;
+                    let score = 0;
+                    
+                    if (name.toLowerCase().startsWith(value)) {
+                        score += 100;
+                    }
+                    
+                    const words = name.toLowerCase().split(' ');
+                    if (words.some(word => word.startsWith(value))) {
+                        score += 75;
+                    }
+                    
+                    if (name.toLowerCase().includes(value)) {
+                        score += 50;
+                    }
+                    
+                    return { name, score };
+                })
+                .filter(item => item.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5);
+
+            if (suggestions.length > 0) {
+                dropdown.innerHTML = suggestions
+                    .map(item => `<div class="autocomplete-item">${item.name}</div>`)
+                    .join('');
+                dropdown.style.display = 'block';
+
+                // Event-Listener für Klicks
+                dropdown.querySelectorAll('.autocomplete-item').forEach((item, index) => {
+                    item.addEventListener('click', () => {
+                        searchInput.value = item.textContent;
+                        dropdown.style.display = 'none';
+                        this.filterTools();
+                    });
+                });
+            } else {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Tastaturnavigation
+        searchInput.addEventListener('keydown', (e) => {
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            
+            if (dropdown.style.display === 'block') {
+                switch(e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                        updateSelection();
+                        break;
+                        
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, -1);
+                        updateSelection();
+                        break;
+                        
+                    case 'Enter':
+                        e.preventDefault();
+                        if (selectedIndex >= 0) {
+                            searchInput.value = items[selectedIndex].textContent;
+                            dropdown.style.display = 'none';
+                            this.filterTools();
+                        }
+                        break;
+                        
+                    case 'Escape':
+                        dropdown.style.display = 'none';
+                        selectedIndex = -1;
+                        break;
+                        
+                    case 'Tab':
+                        if (dropdown.style.display === 'block') {
+                            e.preventDefault();
+                            if (items.length > 0) {
+                                searchInput.value = items[0].textContent;
+                                dropdown.style.display = 'none';
+                                this.filterTools();
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Hilfsfunktion zum Aktualisieren der Auswahl
+        const updateSelection = () => {
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        };
+
+        // Klick außerhalb schließt Dropdown
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) {
+                dropdown.style.display = 'none';
+                selectedIndex = -1;
+            }
+        });
+    }
+
+    showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.style.display = 'flex';
+        loadingScreen.style.opacity = '1';
+    }
+
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }
+
+    updateVersionBadge() {
+        const version = window.electronAPI.getAppVersion();
+        const versionBadge = document.querySelector('.version-badge');
+        if (versionBadge) {
+            versionBadge.textContent = `FixIT v${version}`;
+        }
     }
 }
 

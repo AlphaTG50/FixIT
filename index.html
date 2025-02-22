@@ -9,6 +9,16 @@
     <link rel="icon" type="image/x-icon" href="assets/images/logo/win/icon.ico">
 </head>
 <body>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <img src="assets/images/logo/helpit_white.svg" alt="FixIT Logo" class="loading-logo">
+            <div class="loading-text">FixIT wird geladen...</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+    <div class="version-badge"></div>
     <div class="titlebar">
         <div class="titlebar-left">
             <img src="assets/images/logo/helpit_white.svg" alt="IT-Tools Logo" class="titlebar-logo">
@@ -26,45 +36,80 @@
             </button>
         </div>
     </div>
+    <div class="sidebar">
+        <div class="nav-item active" data-category="all">
+            <i class="fas fa-th-large"></i>
+            Alle Tools
+        </div>
+        <div class="nav-item" data-category="website">
+            <i class="fas fa-globe"></i>
+            Websites
+        </div>
+        <div class="nav-item" data-category="portable">
+            <i class="fas fa-box"></i>
+            Portable
+        </div>
+        <div class="nav-item" data-category="scripts">
+            <i class="fas fa-code"></i>
+            Skripte
+        </div>
+        
+        <!-- Header Controls in Sidebar -->
+        <div class="sidebar-controls">
+            <button id="bugReportBtn" class="control-btn" data-label="Melden">
+                <i class="fas fa-bug"></i>
+            </button>
+            <button id="historyBtn" class="control-btn" data-label="Verlauf">
+                <i class="fas fa-history"></i>
+            </button>
+            <button id="aboutBtn" class="control-btn" data-label="Über">
+                <i class="fas fa-info-circle"></i>
+            </button>
+            <button id="settingsBtn" class="control-btn" data-label="Einstellungen">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="darkModeToggle" class="control-btn" data-label="Darkmode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
     <div class="container">
         <header>
             <div class="header-top">
                 <div class="header-left">
-                    <h1>Toolbox</h1>
-                </div>
-                <div class="header-controls">
-                    <div class="tooltip-container" data-tooltip="Problem melden">
-                        <button id="bugReportBtn" class="bug-report-btn">
-                            <i class="fas fa-bug"></i>
-                        </button>
-                    </div>
-                    <div class="tooltip-container" data-tooltip="Verlauf">
-                        <button id="historyBtn" class="history-btn">
-                            <i class="fas fa-history"></i>
-                        </button>
-                    </div>
-                    <button id="aboutBtn" class="about-btn">
-                        <i class="fas fa-info-circle"></i>
-                    </button>
-                    <button id="settingsBtn" class="settings-btn">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button id="darkModeToggle" class="theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    <h1><span class="white-text">Dein PC.</span><br>
+                        Optimiert.</h1>
                 </div>
             </div>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Tool suchen...">
-                <select id="categoryFilter">
-                    <option value="">Alle Kategorien</option>
-                    <option value="website">Website</option>
-                    <option value="scripts">Skripts</option>
-                    <option value="portable">Portable</option>
-                </select>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Tool suchen...">
+                </div>
+                <div class="filter-group">
+                    <div class="tag-filter-container">
+                        <button id="tagFilterBtn" class="tag-filter-btn">
+                            <i class="fas fa-tags"></i> Tags
+                            <span class="selected-count"></span>
+                        </button>
+                        <div class="tag-dropdown">
+                            <div class="tag-search">
+                                <input type="text" placeholder="Tags durchsuchen...">
+                            </div>
+                            <div class="tag-list">
+                                <!-- Wird dynamisch befüllt -->
+                            </div>
+                            <div class="tag-actions">
+                                <button class="clear-tags">Zurücksetzen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
-
+        <div class="active-filters">
+            <div class="selected-tags"></div>
+        </div>
         <main>
             <div class="tools-container">
                 <div id="toolsList" class="tools-grid"></div>
@@ -74,6 +119,9 @@
             <p>© 2024 HelpIT - Alle Rechte vorbehalten | <span class="tool-counter" id="toolCounter"></span></p>
         </footer>
     </div>
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
     <div id="settingsModal" class="modal">
         <div class="modal-content settings-modal">
             <div class="modal-header">

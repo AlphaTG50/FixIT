@@ -84,24 +84,37 @@ app.on('window-all-closed', () => {
 // Handle tool launching
 ipcMain.on('launch-tool', (event, toolPath) => {
     if (toolPath.startsWith('mailto:')) {
-        // E-Mail-Links mit shell.openExternal öffnen
-        require('electron').shell.openExternal(toolPath);
+        shell.openExternal(toolPath);
     } else if (toolPath.startsWith('http')) {
-        // Web-URLs mit shell.openExternal öffnen
-        require('electron').shell.openExternal(toolPath);
+        shell.openExternal(toolPath);
     } else {
-        // Lokale Programme mit exec ausführen
-        const absolutePath = toolPath.startsWith('assets') 
-            ? path.join(__dirname, toolPath)
-            : toolPath;
+        let absolutePath;
+        if (toolPath.startsWith('resources/executable')) {
+            if (app.isPackaged) {
+                absolutePath = path.join(process.resourcesPath, 'executable', path.basename(toolPath));
+            } else {
+                absolutePath = path.join(__dirname, toolPath);
+            }
+        } else {
+            absolutePath = toolPath;
+        }
             
         console.log('Launching tool:', absolutePath);
         
-        exec(`"${absolutePath}"`, (error) => {
-            if (error) {
-                console.error('Error launching tool:', error);
-            }
-        });
+        // PowerShell-Skripte mit erhöhten Rechten ausführen
+        if (absolutePath.endsWith('.ps1')) {
+            exec(`powershell -ExecutionPolicy Bypass -File "${absolutePath}"`, (error) => {
+                if (error) {
+                    console.error('Error launching PowerShell script:', error);
+                }
+            });
+        } else {
+            exec(`"${absolutePath}"`, (error) => {
+                if (error) {
+                    console.error('Error launching tool:', error);
+                }
+            });
+        }
     }
 });
 
@@ -166,4 +179,10 @@ ipcMain.handle('save-and-open-zip', async (event, files) => {
     await shell.openPath(downloadsPath);
     
     return zipPath;
+});
+
+// Handler für Ordner öffnen
+ipcMain.on('show-folder', (event, folderPath) => {
+    const absolutePath = path.join(__dirname, folderPath);
+    shell.openPath(absolutePath);
 }); 

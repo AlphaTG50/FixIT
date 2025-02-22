@@ -1,6 +1,6 @@
 {
   "name": "helpit",
-  "version": "1.0.9",
+  "version": "1.1.1",
   "description": "HelpIT Application",
   "main": "main.js",
   "scripts": {
