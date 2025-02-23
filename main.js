@@ -24,21 +24,9 @@ function createWindow() {
         }
     });
 
-    const splash = new BrowserWindow({
-        width: 500,
-        height: 300,
-        transparent: true,
-        frame: false,
-        alwaysOnTop: true
-    });
-
-    splash.loadFile('splash.html');
-    splash.center();
-
     win.loadFile('index.html');
 
     win.once('ready-to-show', () => {
-        splash.destroy();
         win.show();
     });
 

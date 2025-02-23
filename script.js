@@ -3,6 +3,9 @@ class ToolManager {
         // Loading Screen sofort anzeigen
         this.showLoadingScreen();
         
+        // Lade gespeicherte Shortcuts
+        this.shortcuts = this.loadShortcuts();
+        
         // Zuerst Tools und Favoriten laden
         this.initializeTools();
         this.loadFavorites();
@@ -43,6 +46,13 @@ class ToolManager {
 
         // Loading Screen ausblenden nach Initialisierung
         this.hideLoadingScreen();
+
+        this.loadBlueLightFilterSettings();
+        
+        // Initialisiere die Shortcut-Anzeige
+        this.updateAllShortcutDisplays();
+        this.setupShortcuts();
+        this.setupEasterEggs();
     }
 
     initializeSynonyms() {
@@ -110,7 +120,33 @@ class ToolManager {
             this.filterTools();
         });
         
-        document.getElementById('darkModeToggle').addEventListener('click', () => this.toggleTheme());
+        // Globaler ESC-Handler für alle Modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // Finde das zuletzt geöffnete Modal
+                const openModals = [
+                    { id: 'easterEggsModal', hide: () => this.hideEasterEggsModal() },
+                    { id: 'shortcutsModal', hide: () => this.hideShortcutsModal() },
+                    { id: 'historyModal', hide: () => this.hideHistoryModal() },
+                    { id: 'bugReportModal', hide: () => this.hideBugReportModal() },
+                    { id: 'aboutModal', hide: () => this.hideAboutModal() },
+                    { id: 'settingsModal', hide: () => this.hideSettingsModal() }
+                ].filter(modal => 
+                    document.getElementById(modal.id).style.display === 'block'
+                );
+                
+                // Schließe nur das oberste Modal
+                if (openModals.length > 0) {
+                    openModals[0].hide();
+                }
+            }
+        });
+        
+        document.getElementById('darkModeToggle').addEventListener('change', (e) => {
+            const isDarkMode = e.target.checked;
+            this.setTheme(isDarkMode ? 'dark' : 'light');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        });
         document.getElementById('settingsBtn').addEventListener('click', () => {
             this.showSettingsModal();
         });
@@ -138,6 +174,29 @@ class ToolManager {
         document.getElementById('bugReportForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.submitBugReport();
+        });
+        
+        // Favoriten löschen
+        document.getElementById('clearFavoritesBtn').addEventListener('click', () => {
+            this.showConfirmDialog(
+                'Favoriten löschen',
+                'Möchtest du wirklich alle Favoriten löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+                () => {
+                    localStorage.removeItem('favorites');
+                    this.favorites = new Set();
+                    this.renderTools(this.currentFilteredTools);
+                    
+                    // Bestätigung anzeigen
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.className = 'shortcut-confirm';
+                    confirmMessage.innerHTML = '<i class="fas fa-check"></i> Alle Favoriten wurden gelöscht';
+                    document.querySelector('.modal-content').appendChild(confirmMessage);
+                    
+                    setTimeout(() => {
+                        confirmMessage.remove();
+                    }, 2000);
+                }
+            );
         });
     }
 
@@ -730,38 +789,16 @@ class ToolManager {
 
     initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        this.updateThemeIcon(savedTheme);
+        this.setTheme(savedTheme);
+        document.getElementById('darkModeToggle').checked = savedTheme === 'dark';
         
         const titleText = document.querySelector('.white-text');
         titleText.classList.toggle('dark-mode', savedTheme === 'dark');
         titleText.classList.toggle('light-mode', savedTheme === 'light');
     }
 
-    toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        this.updateThemeIcon(newTheme);
-        
-        const titleText = document.querySelector('.white-text');
-        titleText.classList.toggle('dark-mode', newTheme === 'dark');
-        titleText.classList.toggle('light-mode', newTheme === 'light');
-    }
-
-    updateThemeIcon(theme) {
-        const icon = document.querySelector('#darkModeToggle i');
-        const button = document.querySelector('#darkModeToggle');
-        
-        if (theme === 'dark') {
-            icon.className = 'fas fa-sun';
-            button.setAttribute('data-label', 'Lightmode');
-        } else {
-            icon.className = 'fas fa-moon';
-            button.setAttribute('data-label', 'Darkmode');
-        }
+    setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
     }
 
     showModal(tool = null) {
@@ -1611,11 +1648,12 @@ class ToolManager {
     }
 
     setupScrollToTop() {
-        const scrollBtn = document.getElementById('scrollToTop');
+        const scrollBtn = document.querySelector('.scroll-to-top');
         const container = document.querySelector('.container');
         
         container.addEventListener('scroll', () => {
-            if (container.scrollTop > 300) {
+            const scrolled = container.scrollTop;
+            if (scrolled > 300) {
                 scrollBtn.classList.add('visible');
             } else {
                 scrollBtn.classList.remove('visible');
@@ -1785,6 +1823,678 @@ class ToolManager {
         if (versionBadge) {
             versionBadge.textContent = `FixIT v${version}`;
         }
+    }
+
+    loadBlueLightFilterSettings() {
+        const enabled = localStorage.getItem('blueLightFilter') === 'true';
+        
+        const checkbox = document.getElementById('blueLightFilter');
+        
+        checkbox.checked = enabled;
+        
+        if (enabled) {
+            document.body.classList.add('blue-light-filter');
+            document.documentElement.style.setProperty('--blue-light-filter-strength', '0.5');
+        }
+        
+        // Event Listener für Checkbox
+        checkbox.addEventListener('change', (e) => {
+            const isEnabled = e.target.checked;
+            localStorage.setItem('blueLightFilter', isEnabled);
+            
+            if (isEnabled) {
+                document.body.classList.add('blue-light-filter');
+                document.documentElement.style.setProperty('--blue-light-filter-strength', '0.5');
+            } else {
+                document.body.classList.remove('blue-light-filter');
+            }
+        });
+    }
+
+    loadShortcuts() {
+        const defaultShortcuts = {
+            settings: { key: ',', modifiers: ['ctrl'] },
+            search: { key: 'f', modifiers: ['ctrl'] },
+            darkMode: { key: 'd', modifiers: ['ctrl'] },
+            allTools: { key: '1', modifiers: ['alt'] },
+            websites: { key: '2', modifiers: ['alt'] },
+            portable: { key: '3', modifiers: ['alt'] },
+            scripts: { key: '4', modifiers: ['alt'] }
+        };
+        
+        const savedShortcuts = localStorage.getItem('shortcuts');
+        // Wenn keine gespeicherten Shortcuts existieren, speichere die Defaults
+        if (!savedShortcuts) {
+            localStorage.setItem('shortcuts', JSON.stringify(defaultShortcuts));
+            return defaultShortcuts;
+        }
+        
+        try {
+            // Versuche die gespeicherten Shortcuts zu parsen
+            const parsed = JSON.parse(savedShortcuts);
+            // Stelle sicher, dass alle erforderlichen Shortcuts vorhanden sind
+            return { ...defaultShortcuts, ...parsed };
+        } catch (e) {
+            // Bei Fehler verwende die Defaults
+            console.error('Fehler beim Laden der Shortcuts:', e);
+            return defaultShortcuts;
+        }
+    }
+
+    saveShortcuts() {
+        localStorage.setItem('shortcuts', JSON.stringify(this.shortcuts));
+        // Aktualisiere die Anzeige nach dem Speichern
+        this.updateAllShortcutDisplays();
+    }
+
+    setupShortcuts() {
+        // Modal Steuerung
+        document.getElementById('shortcutsBtn').addEventListener('click', () => {
+            this.showShortcutsModal();
+        });
+        
+        document.getElementById('closeShortcutsBtn').addEventListener('click', () => {
+            this.hideShortcutsModal();
+        });
+
+        // Reset Button
+        document.getElementById('resetShortcutsBtn').addEventListener('click', () => {
+            this.resetShortcuts();
+        });
+
+        // Shortcut Items klickbar machen
+        document.querySelectorAll('.shortcut-item').forEach(item => {
+            item.addEventListener('click', () => this.editShortcut(item));
+        });
+        
+        // Globale Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (this.isEditingShortcut) return;
+
+            // Einstellungen öffnen
+            if (this.matchesShortcut(e, this.shortcuts.settings)) {
+                e.preventDefault();
+                this.showSettingsModal();
+            }
+            
+            // Suche fokussieren
+            if (this.matchesShortcut(e, this.shortcuts.search)) {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // Navigation
+            if (this.matchesShortcut(e, this.shortcuts.allTools)) {
+                e.preventDefault();
+                document.querySelector('.nav-item[data-category="all"]').click();
+            }
+            if (this.matchesShortcut(e, this.shortcuts.websites)) {
+                e.preventDefault();
+                document.querySelector('.nav-item[data-category="website"]').click();
+            }
+            if (this.matchesShortcut(e, this.shortcuts.portable)) {
+                e.preventDefault();
+                document.querySelector('.nav-item[data-category="portable"]').click();
+            }
+            if (this.matchesShortcut(e, this.shortcuts.scripts)) {
+                e.preventDefault();
+                document.querySelector('.nav-item[data-category="scripts"]').click();
+            }
+            
+            // Dark Mode umschalten
+            if (this.matchesShortcut(e, this.shortcuts.darkMode)) {
+                e.preventDefault();
+                const darkModeToggle = document.getElementById('darkModeToggle');
+                darkModeToggle.checked = !darkModeToggle.checked;
+                this.setTheme(darkModeToggle.checked ? 'dark' : 'light');
+                localStorage.setItem('theme', darkModeToggle.checked ? 'dark' : 'light');
+            }
+        });
+    }
+
+    matchesShortcut(event, shortcut) {
+        const modifiersMatch = shortcut.modifiers.every(mod => {
+            if (mod === 'ctrl') return event.ctrlKey;
+            if (mod === 'alt') return event.altKey;
+            if (mod === 'shift') return event.shiftKey;
+            return false;
+        });
+        
+        return modifiersMatch && event.key.toLowerCase() === shortcut.key.toLowerCase();
+    }
+
+    editShortcut(item) {
+        if (this.isEditingShortcut) return;
+        
+        this.isEditingShortcut = true;
+        item.classList.add('editing');
+        const keysElement = item.querySelector('.shortcut-keys[data-shortcut]');
+        if (!keysElement) return;
+        
+        const originalText = keysElement.innerHTML;
+        keysElement.innerHTML = 'Drücke eine Tastenkombination...';
+        keysElement.classList.add('editing');
+
+        const handleKeyDown = (e) => {
+            e.preventDefault();
+            
+            const modifiers = [];
+            if (e.ctrlKey) modifiers.push('ctrl');
+            if (e.altKey) modifiers.push('alt');
+            if (e.shiftKey) modifiers.push('shift');
+            
+            // Ignoriere reine Modifier-Tasten
+            if (['Control', 'Alt', 'Shift'].includes(e.key)) return;
+            
+            const shortcutId = keysElement.getAttribute('data-shortcut');
+            if (!shortcutId || !this.shortcuts[shortcutId]) return;
+            
+            // Prüfe auf Duplikate
+            const newShortcut = {
+                key: e.key,
+                modifiers: modifiers
+            };
+            
+            const duplicate = this.findDuplicateShortcut(newShortcut, shortcutId);
+            if (duplicate) {
+                this.showShortcutError(`Dieser Shortcut wird bereits für "${duplicate}" verwendet`);
+                
+                // Setze den ursprünglichen Zustand zurück
+                item.classList.remove('editing');
+                keysElement.classList.remove('editing');
+                this.updateShortcutDisplay(item, this.shortcuts[shortcutId]);
+                this.isEditingShortcut = false;
+                document.removeEventListener('keydown', handleKeyDown);
+                return;
+            }
+            
+            this.shortcuts[shortcutId] = {
+                key: e.key,
+                modifiers: modifiers
+            };
+            
+            this.saveShortcuts();
+            this.updateShortcutDisplay(item, this.shortcuts[shortcutId]);
+            
+            // Cleanup
+            item.classList.remove('editing');
+            keysElement.classList.remove('editing');
+            this.isEditingShortcut = false;
+            document.removeEventListener('keydown', handleKeyDown);
+            
+            // Aktualisiere die Anzeige
+            this.updateAllShortcutDisplays();
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+    }
+
+    findDuplicateShortcut(newShortcut, currentId) {
+        for (const [id, shortcut] of Object.entries(this.shortcuts)) {
+            // Überspringe den aktuellen Shortcut
+            if (id === currentId) continue;
+            
+            // Prüfe ob die Modifiers gleich sind
+            const sameModifiers = shortcut.modifiers.length === newShortcut.modifiers.length &&
+                shortcut.modifiers.every(mod => newShortcut.modifiers.includes(mod));
+            
+            // Prüfe ob die Taste gleich ist
+            const sameKey = shortcut.key.toLowerCase() === newShortcut.key.toLowerCase();
+            
+            if (sameModifiers && sameKey) {
+                // Gib den Namen des Shortcuts zurück
+                const shortcutNames = {
+                    settings: 'Einstellungen öffnen',
+                    search: 'Suche fokussieren',
+                    darkMode: 'Dark Mode umschalten',
+                    allTools: 'Alle Tools',
+                    websites: 'Websites',
+                    portable: 'Portable',
+                    scripts: 'Skripte'
+                };
+                return shortcutNames[id];
+            }
+        }
+        return null;
+    }
+
+    showShortcutError(message) {
+        const item = document.querySelector('.shortcut-item.editing');
+        if (!item) return;
+        
+        // Entferne alte Fehlermeldungen
+        const oldError = item.querySelector('.shortcut-error');
+        if (oldError) oldError.remove();
+        
+        // Erstelle neue Fehlermeldung
+        const error = document.createElement('div');
+        error.className = 'shortcut-error';
+        error.textContent = message;
+        
+        item.appendChild(error);
+        
+        // Animation starten
+        requestAnimationFrame(() => {
+            error.classList.add('show');
+        });
+        
+        // Fehlermeldung nach 3 Sekunden ausblenden
+        setTimeout(() => {
+            error.classList.remove('show');
+            setTimeout(() => error.remove(), 300);
+        }, 3000);
+    }
+
+    updateShortcutDisplay(item, shortcut) {
+        const keysElement = item.querySelector('.shortcut-keys[data-shortcut]');
+        const modifierMap = {
+            'ctrl': 'Strg',
+            'alt': 'Alt',
+            'shift': 'Shift'
+        };
+        const modifierTexts = shortcut.modifiers.map(mod => `<kbd>${modifierMap[mod] || mod}</kbd>`);
+        keysElement.innerHTML = [...modifierTexts, `<kbd>${shortcut.key.toUpperCase()}</kbd>`].join(' + ');
+    }
+
+    showShortcutsModal() {
+        document.getElementById('shortcutsModal').style.display = 'block';
+    }
+    
+    hideShortcutsModal() {
+        document.getElementById('shortcutsModal').style.display = 'none';
+    }
+
+    updateAllShortcutDisplays() {
+        Object.entries(this.shortcuts).forEach(([id, shortcut]) => {
+            const element = document.querySelector(`.shortcut-keys[data-shortcut="${id}"]`);
+            if (element) {
+                this.updateShortcutDisplay(element.closest('.shortcut-item'), shortcut);
+            }
+        });
+    }
+
+    resetShortcuts() {
+        const defaultShortcuts = {
+            settings: { key: ',', modifiers: ['ctrl'] },
+            search: { key: 'f', modifiers: ['ctrl'] },
+            darkMode: { key: 'd', modifiers: ['ctrl'] },
+            allTools: { key: '1', modifiers: ['alt'] },
+            websites: { key: '2', modifiers: ['alt'] },
+            portable: { key: '3', modifiers: ['alt'] },
+            scripts: { key: '4', modifiers: ['alt'] }
+        };
+    
+        this.shortcuts = defaultShortcuts;
+        this.saveShortcuts();
+        this.updateAllShortcutDisplays();
+    
+        // Zeige Bestätigung
+        const confirmMessage = document.createElement('div');
+        confirmMessage.className = 'shortcut-confirm';
+        confirmMessage.innerHTML = '<i class="fas fa-check"></i> Standard-Shortcuts wiederhergestellt';
+        document.querySelector('.shortcuts-modal').appendChild(confirmMessage);
+    
+        setTimeout(() => {
+            confirmMessage.remove();
+        }, 2000);
+    }
+
+    setupEasterEggs() {
+        // Lade bereits gefundene Easter Eggs
+        this.loadUnlockedEasterEggs();
+        
+        document.getElementById('easterEggsBtn').addEventListener('click', () => {
+            this.showEasterEggsModal();
+        });
+        
+        document.getElementById('closeEasterEggsBtn').addEventListener('click', () => {
+            this.hideEasterEggsModal();
+        });
+        
+        // Reset Button für Easter Eggs
+        document.getElementById('resetEasterEggsBtn').addEventListener('click', () => {
+            this.showConfirmDialog(
+                'Easter Eggs zurücksetzen',
+                'Möchtest du wirklich alle gefundenen Easter Eggs zurücksetzen?',
+                () => {
+                    localStorage.removeItem('unlockedEasterEggs');
+                    document.querySelectorAll('.easter-egg-item').forEach(item => {
+                        const status = item.querySelector('.easter-egg-status');
+                        const solution = item.querySelector('.easter-egg-solution');
+                        status.textContent = 'Noch nicht gefunden';
+                        status.setAttribute('data-unlocked', 'false');
+                        if (solution) solution.style.display = 'none';
+                    });
+                    
+                    // Bestätigung anzeigen
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.className = 'shortcut-confirm';
+                    confirmMessage.innerHTML = '<i class="fas fa-check"></i> Alle Easter Eggs wurden zurückgesetzt';
+                    document.querySelector('.easter-eggs-modal').appendChild(confirmMessage);
+                    
+                    setTimeout(() => {
+                        confirmMessage.remove();
+                    }, 2000);
+                }
+            );
+        });
+        
+        // Konami Code
+        let konamiCode = '';
+        const validCode = 'ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba';
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode += e.key;
+            if (konamiCode.length > validCode.length) {
+                konamiCode = konamiCode.slice(-validCode.length);
+            }
+            
+            if (konamiCode === validCode) {
+                this.unlockEasterEgg('konami');
+                // Liste aller Elemente, die den Regenbogen-Effekt bekommen sollen
+                const elements = [
+                    '.container',
+                    '.tool-card',
+                    '.sidebar',
+                    '.tool-logo',
+                    '.shortcut-group',
+                    '.nav-item',
+                    '.scroll-to-top',
+                    'kbd',
+                    '.tool-tag'
+                ];
+                
+                // Füge die Animation zu allen Elementen hinzu
+                elements.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(element => {
+                        element.style.animation = 'rainbow 2s linear infinite';
+                    });
+                });
+                
+                setTimeout(() => {
+                    // Entferne die Animation von allen Elementen
+                    elements.forEach(selector => {
+                        document.querySelectorAll(selector).forEach(element => {
+                            element.style.animation = '';
+                        });
+                    });
+                }, 5000);
+            }
+        });
+        
+        // Easter Egg Handler für die Suchleiste
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value === '99') {
+                this.unlockEasterEgg('galaxy');
+                
+                const container = document.querySelector('.container');
+                const answer = document.createElement('div');
+                answer.className = 'galaxy-answer';
+                answer.innerHTML = `
+                    <div class="answer-content">
+                        <div class="download-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-number">0%</div>
+                        </div>
+                        <div class="answer-text">Download läuft...</div>
+                        <div class="answer-quote">Geschätzte Zeit: 5 Sekunden</div>
+                        <div class="loading-tips">
+                            <span class="tip">Tipp: Das könnte jetzt etwas länger dauern...</span>
+                            <span class="tip">Tipp: 99% - Fast geschafft!</span>
+                            <span class="tip">Tipp: Nur noch ein kleines bisschen...</span>
+                            <span class="tip">Tipp: Irgendwann muss es ja fertig werden...</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(answer);
+                
+                // Progress Animation
+                const progressFill = answer.querySelector('.progress-fill');
+                const progressNumber = answer.querySelector('.progress-number');
+                const timeText = answer.querySelector('.answer-quote');
+                let progress = 0;
+                
+                const progressInterval = setInterval(() => {
+                    if (progress < 99) {
+                        progress += 1;
+                        progressFill.style.width = `${progress}%`;
+                        progressNumber.textContent = `${progress}%`;
+                        
+                        if (progress === 99) {
+                            timeText.textContent = 'Geschätzte Zeit: ♾️';
+                        }
+                    }
+                }, 50); // Schnelle Animation bis 99%
+                
+                // Tips Animation
+                let currentTip = 0;
+                const tips = answer.querySelectorAll('.tip');
+                tips[0].classList.add('show');
+                
+                const tipInterval = setInterval(() => {
+                    tips[currentTip].classList.remove('show');
+                    currentTip = (currentTip + 1) % tips.length;
+                    tips[currentTip].classList.add('show');
+                }, 3000);
+                
+                // Cleanup nach 15 Sekunden
+                setTimeout(() => {
+                    clearInterval(progressInterval);
+                    clearInterval(tipInterval);
+                    answer.classList.add('fade-out');
+                    setTimeout(() => answer.remove(), 1000);
+                }, 15000);
+                
+                e.target.value = '';
+            }
+        });
+
+        // Füge diesen Code nach dem bestehenden Easter Egg Handler hinzu
+        searchInput.addEventListener('input', (e) => {
+            if (e.target.value.toLowerCase() === 'ticket') {
+                this.unlockEasterEgg('support');
+                
+                const container = document.querySelector('.container');
+                const answer = document.createElement('div');
+                answer.className = 'galaxy-answer support-ticket';
+                answer.innerHTML = `
+                    <div class="answer-content">
+                        <div class="ticket-header">
+                            <div class="ticket-number">#12345</div>
+                            <div class="ticket-priority">SUPER MEGA DRINGEND!!!</div>
+                        </div>
+                        <div class="chat-container">
+                        </div>
+                        <div class="ticket-footer">
+                            <div class="admin-status">Max Mustermann</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(answer);
+                const chatContainer = answer.querySelector('.chat-container');
+                
+                // Chat-Nachrichten mit Verzögerungen
+                const messages = [
+                    {
+                        type: 'user',
+                        time: '08:00',
+                        text: 'HILFE!!! Mein Bildschirm ist komplett schwarz!!!',
+                        delay: 1000
+                    },
+                    {
+                        type: 'admin',
+                        time: '08:01',
+                        text: 'Guten Morgen, keine Sorge, wir finden das Problem. Ist der PC eingeschaltet?',
+                        delay: 4000
+                    },
+                    {
+                        type: 'user',
+                        time: '08:15',
+                        text: 'Natürlich! Ich bin doch nicht dumm! Die Maus leuchtet auch!',
+                        delay: 8000
+                    },
+                    {
+                        type: 'admin',
+                        time: '08:16',
+                        text: 'Okay, und leuchtet die Power-LED am Monitor?',
+                        delay: 12000
+                    },
+                    {
+                        type: 'user',
+                        time: '08:30',
+                        text: 'Moment... der Stromstecker ist nicht eingesteckt. Jetzt FUNKTIONIERT ES!',
+                        delay: 16000
+                    },
+                    {
+                        type: 'admin',
+                        time: '08:31',
+                        text: '🤦',
+                        delay: 20000
+                    },
+                ];
+
+                // Funktion zum Hinzufügen einer Nachricht
+                const addMessage = (message) => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `chat-message ${message.type}`;
+                    messageDiv.innerHTML = `
+                        <div class="timestamp">${message.time}</div>
+                        <div class="message">${message.text}</div>
+                    `;
+                    chatContainer.appendChild(messageDiv);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                };
+
+                // Nachrichten nacheinander mit Verzögerungen anzeigen
+                messages.forEach(message => {
+                    setTimeout(() => {
+                        addMessage(message);
+                    }, message.delay);
+                });
+                
+                // Gesamte Animation nach 35 Sekunden beenden
+                setTimeout(() => {
+                    answer.classList.add('fade-out');
+                    setTimeout(() => answer.remove(), 1000);
+                }, 35000);
+                
+                e.target.value = '';
+            }
+        });
+    }
+
+    unlockEasterEgg(id) {
+        const unlockedEggs = JSON.parse(localStorage.getItem('unlockedEasterEggs') || '[]');
+        if (!unlockedEggs.includes(id)) {
+            unlockedEggs.push(id);
+            localStorage.setItem('unlockedEasterEggs', JSON.stringify(unlockedEggs));
+            this.showEasterEggNotification();
+        }
+        
+        const item = document.querySelector(`.easter-egg-item[data-id="${id}"]`);
+        if (item) {
+            const statusElement = item.querySelector('.easter-egg-status');
+            const solutionElement = item.querySelector('.easter-egg-solution');
+            
+            if (statusElement) {
+                statusElement.textContent = 'Gefunden!';
+                statusElement.setAttribute('data-unlocked', 'true');
+            }
+            
+            if (solutionElement) {
+                solutionElement.style.display = 'block';
+            }
+        }
+    }
+
+    loadUnlockedEasterEggs() {
+        const unlockedEggs = JSON.parse(localStorage.getItem('unlockedEasterEggs') || '[]');
+        unlockedEggs.forEach(id => {
+            const item = document.querySelector(`.easter-egg-item[data-id="${id}"]`);
+            if (item) {
+                const statusElement = item.querySelector('.easter-egg-status');
+                const solutionElement = item.querySelector('.easter-egg-solution');
+                
+                if (statusElement) {
+                    statusElement.textContent = 'Gefunden!';
+                    statusElement.setAttribute('data-unlocked', 'true');
+                }
+                
+                if (solutionElement) {
+                    solutionElement.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    showEasterEggsModal() {
+        document.getElementById('easterEggsModal').style.display = 'block';
+    }
+    
+    hideEasterEggsModal() {
+        document.getElementById('easterEggsModal').style.display = 'none';
+    }
+
+    showConfirmDialog(title, message, onConfirm) {
+        const dialog = document.createElement('div');
+        dialog.className = 'confirm-dialog';
+        dialog.innerHTML = `
+            <h3>${title}</h3>
+            <p>${message}</p>
+            <div class="confirm-dialog-buttons">
+                <button class="cancel-btn">Abbrechen</button>
+                <button class="confirm-btn">Löschen</button>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+        
+        const cancelBtn = dialog.querySelector('.cancel-btn');
+        const confirmBtn = dialog.querySelector('.confirm-btn');
+        
+        cancelBtn.addEventListener('click', () => {
+            dialog.remove();
+        });
+        
+        confirmBtn.addEventListener('click', () => {
+            onConfirm();
+            dialog.remove();
+        });
+    }
+
+    showEasterEggNotification() {
+        // Entferne alte Benachrichtigungen
+        const oldNotification = document.querySelector('.easter-egg-notification');
+        if (oldNotification) oldNotification.remove();
+
+        // Erstelle neue Benachrichtigung
+        const notification = document.createElement('div');
+        notification.className = 'easter-egg-notification';
+        notification.innerHTML = `
+            <i class="fas fa-star"></i>
+            <div class="notification-content">
+                <div class="notification-title">Easter Egg gefunden!</div>
+                <div class="notification-message">Du hast ein verstecktes Feature entdeckt</div>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animation starten
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
+
+        // Benachrichtigung nach 3 Sekunden ausblenden
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 }
 

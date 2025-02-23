@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixIT</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dark.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="assets/images/logo/win/icon.ico">
 </head>
@@ -56,20 +57,11 @@
         
         <!-- Header Controls in Sidebar -->
         <div class="sidebar-controls">
-            <button id="bugReportBtn" class="control-btn" data-label="Melden">
-                <i class="fas fa-bug"></i>
-            </button>
-            <button id="historyBtn" class="control-btn" data-label="Verlauf">
-                <i class="fas fa-history"></i>
-            </button>
             <button id="aboutBtn" class="control-btn" data-label="Über">
                 <i class="fas fa-info-circle"></i>
             </button>
             <button id="settingsBtn" class="control-btn" data-label="Einstellungen">
                 <i class="fas fa-cog"></i>
-            </button>
-            <button id="darkModeToggle" class="control-btn" data-label="Darkmode">
-                <i class="fas fa-moon"></i>
             </button>
         </div>
     </div>
@@ -138,6 +130,65 @@
                             <span>Immer im Vordergrund</span>
                             <input type="checkbox" id="alwaysOnTop">
                         </label>
+                        <p class="setting-description">Für alle, die gerne im Mittelpunkt stehen</p>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3>Anzeige</h3>
+                    <div class="setting-item">
+                        <label>
+                            <span>Dunkler Modus</span>
+                            <input type="checkbox" id="darkModeToggle">
+                        </label>
+                        <p class="setting-description">Perfekt für Vampire und Nachtschwärmer</p>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <span>Blaulichtfilter</span>
+                            <input type="checkbox" id="blueLightFilter">
+                        </label>
+                        <p class="setting-description">Damit deine Augen nicht aussehen wie ein Zombie</p>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3>Übersicht & Support</h3>
+                    <div class="setting-item clickable" id="historyBtn">
+                        <div class="setting-content">
+                            <span>Verlauf</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <p class="setting-description">Zeige deine kürzlich verwendeten Tools an</p>
+                    </div>
+                    <div class="setting-item clickable" id="shortcutsBtn">
+                        <div class="setting-content">
+                            <span>Tastenkombinationen</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <p class="setting-description">Verwalte und passe deine Shortcuts an</p>
+                    </div>
+                    <div class="setting-item clickable" id="bugReportBtn">
+                        <div class="setting-content">
+                            <span>Problem melden</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <p class="setting-description">Melde einen Fehler oder schlage eine Verbesserung vor</p>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3>Sonstiges</h3>
+                    <div class="setting-item clickable" id="clearFavoritesBtn">
+                        <div class="setting-content">
+                            <span>Favoriten löschen</span>
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <p class="setting-description">Entferne alle gespeicherten Favoriten</p>
+                    </div>
+                    <div class="setting-item clickable" id="easterEggsBtn">
+                        <div class="setting-content">
+                            <span>Easter Eggs</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <p class="setting-description">Entdecke versteckte Funktionen und Überraschungen</p>
                     </div>
                 </section>
             </div>
@@ -309,6 +360,139 @@
             </div>
             <div class="history-list" id="historyList">
                 <!-- Wird dynamisch befüllt -->
+            </div>
+        </div>
+    </div>
+    <div id="shortcutsModal" class="modal">
+        <div class="modal-content shortcuts-modal">
+            <div class="modal-header">
+                <h2>Tastenkombinationen</h2>
+                <div class="modal-header-controls">
+                    <button class="reset-shortcuts-btn" id="resetShortcutsBtn" title="Standard wiederherstellen">
+                        <i class="fas fa-undo-alt"></i>
+                    </button>
+                    <button class="close-modal-btn" id="closeShortcutsBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="shortcuts-list">
+                <div class="shortcut-group">
+                    <h3><i class="fas fa-star"></i> Allgemein</h3>
+                    <div class="shortcut-item">
+                        <div class="shortcut-item-content">
+                            <div class="shortcut-info">
+                                <span class="shortcut-label">Einstellungen öffnen</span>
+                                <div class="shortcut-keys" data-shortcut="settings">
+                                    <kbd>Strg</kbd> + <kbd>,</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <div class="shortcut-item-content">
+                            <div class="shortcut-info">
+                                <span class="shortcut-label">Dark Mode umschalten</span>
+                                <div class="shortcut-keys" data-shortcut="darkMode">
+                                    <kbd>Strg</kbd> + <kbd>D</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <div class="shortcut-info">
+                            <span class="shortcut-label">Suche fokussieren</span>
+                            <div class="shortcut-keys" data-shortcut="search">
+                                <kbd>Strg</kbd> + <kbd>F</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h3><i class="fas fa-compass"></i> Navigation</h3>
+                    <div class="shortcut-item">
+                        <div class="shortcut-info">
+                            <span class="shortcut-label">Alle Tools</span>
+                            <div class="shortcut-keys" data-shortcut="allTools">
+                                <kbd>Alt</kbd> + <kbd>1</kbd>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <div class="shortcut-info">
+                            <span class="shortcut-label">Websites</span>
+                            <div class="shortcut-keys" data-shortcut="websites">
+                                <kbd>Alt</kbd> + <kbd>2</kbd>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <div class="shortcut-info">
+                            <span class="shortcut-label">Portable</span>
+                            <div class="shortcut-keys" data-shortcut="portable">
+                                <kbd>Alt</kbd> + <kbd>3</kbd>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <div class="shortcut-info">
+                            <span class="shortcut-label">Skripte</span>
+                            <div class="shortcut-keys" data-shortcut="scripts">
+                                <kbd>Alt</kbd> + <kbd>4</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="easterEggsModal" class="modal">
+        <div class="modal-content easter-eggs-modal">
+            <div class="modal-header">
+                <h2>Easter Eggs</h2>
+                <div class="modal-header-controls">
+                    <button class="reset-easter-eggs-btn" id="resetEasterEggsBtn" title="Zurücksetzen">
+                        <i class="fas fa-undo-alt"></i>
+                    </button>
+                    <button class="close-modal-btn" id="closeEasterEggsBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="easter-eggs-list">
+                <div class="easter-egg-item" data-id="konami">
+                    <div class="easter-egg-header">
+                        <h3><i class="fas fa-hat-wizard"></i> Kazuhisa's Vermächtnis</h3>
+                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
+                    </div>
+                    <p class="easter-egg-hint">1986 schuf Kazuhisa Hashimoto einen Code, der die Gaming-Welt für immer veränderte. Seine Schöpfung lebt bis heute weiter - eine Sequenz aus Pfeilen, die mit den Anfängen endet...</p>
+                    <div class="easter-egg-solution" style="display: none">
+                        <p class="solution-text">↑↑↓↓←→←→BA</p>
+                        <p class="solution-description">Der originale Konami Code wurde ursprünglich als Cheat für das Spiel Gradius entwickelt, weil es dem Entwickler zum Testen zu schwer war.</p>
+                    </div>
+                </div>
+                <div class="easter-egg-item" data-id="galaxy">
+                    <div class="easter-egg-header">
+                        <h3><i class="fas fa-download"></i> Der ewige Download</h3>
+                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
+                    </div>
+                    <p class="easter-egg-hint">99 Probleme, aber der Download ist nur eins davon...</p>
+                    <div class="easter-egg-solution" style="display: none">
+                        <p class="solution-text">99</p>
+                        <p class="solution-description">Der klassische 99%-Download - so nah am Ziel und doch so fern.</p>
+                    </div>
+                </div>
+                <div class="easter-egg-item" data-id="support">
+                    <div class="easter-egg-header">
+                        <h3><i class="fas fa-headset"></i> Ein Tag im Leben eines IT-Admins</h3>
+                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
+                    </div>
+                    <p class="easter-egg-hint">Haben Sie schon versucht, ein Ticket zu erstellen?</p>
+                    <div class="easter-egg-solution" style="display: none">
+                        <p class="solution-text">ticket</p>
+                        <p class="solution-description">Eine typische Support-Konversation, die jeder IT-Admin nur zu gut kennt. Und ja, Ein- und Ausschalten löst tatsächlich die meisten Probleme!</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
