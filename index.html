@@ -124,13 +124,20 @@
             </div>
             <div class="settings-sections">
                 <section class="settings-section">
-                    <h3>Fenster</h3>
+                    <h3>Funktionen</h3>
                     <div class="setting-item">
                         <label>
                             <span>Immer im Vordergrund</span>
                             <input type="checkbox" id="alwaysOnTop">
                         </label>
                         <p class="setting-description">Für alle, die gerne im Mittelpunkt stehen</p>
+                    </div>
+                    <div class="setting-item clickable" id="clearFavoritesBtn">
+                        <div class="setting-content">
+                            <span>Favoriten löschen</span>
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <p class="setting-description">Entferne alle gespeicherten Favoriten</p>
                     </div>
                 </section>
                 <section class="settings-section">
@@ -147,11 +154,33 @@
                             <span>Blaulichtfilter</span>
                             <input type="checkbox" id="blueLightFilter">
                         </label>
-                        <p class="setting-description">Damit deine Augen nicht aussehen wie ein Zombie</p>
+                        <div class="blue-light-filter-settings" style="display: none;">
+                            <div class="blue-light-filter-strength">
+                                <label>Intensität</label>
+                                <input type="range" id="blueLightFilterStrength" min="0" max="100" step="1">
+                                <span class="strength-value">50%</span>
+                            </div>
+                            <div class="blue-light-filter-presets">
+                                <label>Voreinstellungen</label>
+                                <div class="preset-buttons">
+                                    <button data-strength="30" data-color="warm">Leicht</button>
+                                    <button data-strength="60" data-color="warm">Mittel</button>
+                                    <button data-strength="90" data-color="warm">Stark</button>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="setting-description">Schütze deine Augen vor schädlichem Blaulicht</p>
                     </div>
                 </section>
                 <section class="settings-section">
-                    <h3>Übersicht & Support</h3>
+                    <h3>Extras</h3>
+                    <div class="setting-item clickable" id="easterEggsBtn">
+                        <div class="setting-content">
+                            <span>Easter Eggs</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <p class="setting-description">Entdecke versteckte Funktionen und Überraschungen</p>
+                    </div>
                     <div class="setting-item clickable" id="historyBtn">
                         <div class="setting-content">
                             <span>Verlauf</span>
@@ -166,6 +195,17 @@
                         </div>
                         <p class="setting-description">Verwalte und passe deine Shortcuts an</p>
                     </div>
+                </section>
+                </section>
+                <section class="settings-section">
+                    <h3>Hilfe</h3>
+                    <div class="setting-item clickable" id="checkUpdateBtn">
+                        <div class="setting-content">
+                            <span>Nach Updates suchen</span>
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <p class="setting-description">Aktuelle Version: <span id="currentVersion"></span></p>
+                    </div>
                     <div class="setting-item clickable" id="bugReportBtn">
                         <div class="setting-content">
                             <span>Problem melden</span>
@@ -173,23 +213,11 @@
                         </div>
                         <p class="setting-description">Melde einen Fehler oder schlage eine Verbesserung vor</p>
                     </div>
-                </section>
-                <section class="settings-section">
-                    <h3>Sonstiges</h3>
-                    <div class="setting-item clickable" id="clearFavoritesBtn">
-                        <div class="setting-content">
-                            <span>Favoriten löschen</span>
-                            <i class="fas fa-trash"></i>
-                        </div>
-                        <p class="setting-description">Entferne alle gespeicherten Favoriten</p>
-                    </div>
-                    <div class="setting-item clickable" id="easterEggsBtn">
-                        <div class="setting-content">
-                            <span>Easter Eggs</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                        <p class="setting-description">Entdecke versteckte Funktionen und Überraschungen</p>
-                    </div>
+
+
+
+
+
                 </section>
             </div>
         </div>

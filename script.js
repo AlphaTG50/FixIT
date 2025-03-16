@@ -53,6 +53,7 @@ class ToolManager {
         this.updateAllShortcutDisplays();
         this.setupShortcuts();
         this.setupEasterEggs();
+        this.setupUpdateCheck();
     }
 
     initializeSynonyms() {
@@ -783,6 +784,126 @@ class ToolManager {
                 website: 'https://github.com/massgravel/Microsoft-Activation-Scripts',
                 description: 'Aktiviert Microsoft Windows und Office Produkte mit digitaler Lizenz.',
                 logo: 'https://avatars.githubusercontent.com/u/59795046?v=4'
+            },
+            {
+                id: '49',
+                name: 'ISO Creator',
+                category: 'portable',
+                tags: ['iso', 'erstellen', 'tools'],
+                location: {
+                    portable: 'resources/executable/isocreator.exe'
+                },
+                website: 'https://www.softsea.com/',
+                description: 'Ein einfaches Tool zum Erstellen von ISO-Abbildern von Dateien und Ordnern.',
+                logo: 'https://www.softsea.com//favicon.ico'
+            },
+            {
+                id: '50',
+                name: 'FRITZ!Box Handbuch',
+                category: 'website',
+                tags: ['device', 'handbuch', 'support'],
+                location: {
+                    portable: 'https://avm.de/service/handbuecher/fritzbox/'
+                },
+                website: 'https://avm.de/service/handbuecher/fritzbox/',
+                description: 'Offizielle Handbücher und Anleitungen für FRITZ!Box Geräte.',
+                logo: 'https://avm.de/_assets/d2144d07044c29ab9221ac624be12aef/Images/logo.svg'
+            },
+            {
+                id: '51',
+                name: 'File Pizza',
+                category: 'website',
+                tags: ['dateien', 'upload', 'sharing'],
+                location: {
+                    portable: 'https://file.pizza/'
+                },
+                website: 'https://file.pizza/',
+                description: 'Ein einfacher und schneller Dienst zum Hochladen und Teilen von Dateien online.',
+                logo: 'https://file.pizza/favicon.ico'
+            },
+            {
+                id: '52',
+                name: 'Revo Uninstaller',
+                category: 'portable',
+                tags: ['deinstallation', 'tools', 'windows'],
+                location: {
+                    portable: 'resources/executable/revouninstaller.exe'
+                },
+                website: 'https://www.revouninstaller.com/',
+                description: 'Ein leistungsstarkes Deinstallationswerkzeug für Windows, das alle Spuren von Programmen entfernt.',
+                logo: 'https://www.revouninstaller.com/favicon.ico'
+            },
+            {
+                id: '53',
+                name: 'Photopea',
+                category: 'website',
+                tags: ['bildbearbeitung', 'online', 'tools'],
+                location: {
+                    portable: 'https://www.photopea.com/'
+                },
+                website: 'https://www.photopea.com/',
+                description: 'Ein leistungsstarkes Online-Bildbearbeitungstool, das Photoshop ähnelt.',
+                logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Photopea_logo.svg/1200px-Photopea_logo.svg.png'
+            },
+            {
+                id: '54',
+                name: 'ShareX',
+                category: 'portable',
+                tags: ['screenshot', 'aufnahme', 'tools'],
+                location: {
+                    portable: 'resources/executable/sharex.exe'
+                },
+                website: 'https://getsharex.com/',
+                description: 'Ein leistungsstarkes Tool zum Aufnehmen von Screenshots und Bildschirmaufnahmen.',
+                logo: 'https://getsharex.com/favicon.ico'
+            },
+            {
+                id: '55',
+                name: 'Bulk Crap Uninstaller',
+                category: 'portable',
+                tags: ['deinstallation', 'tools', 'windows'],
+                location: {
+                    portable: 'resources/executable/bcuninstaller.exe'
+                },
+                website: 'https://www.bcuninstaller.com/',
+                description: 'Ein leichtgewichtiges Deinstallationswerkzeug für Windows, das eine einfache und effektive Möglichkeit bietet, Programme zu entfernen.',
+                logo: 'https://images.sftcdn.net/images/t_app-icon-m/p/50cabcb9-4d44-47bd-8cff-afe805b7f07e/620276404/bulk-crap-uninstaller-logo.png'
+            },
+            {
+                id: '56',
+                name: 'CnvMP3',
+                category: 'website',
+                tags: ['video', 'audio', 'converter'],
+                location: {
+                    portable: 'https://cnvmp3.com/v18'
+                },
+                website: 'https://cnvmp3.com/v18',
+                    description: 'CnvMP3 ist ein Tool, mit dem Sie Youtube-Videos in Audio- oder Videoformate herunterladen',
+                logo: 'https://storage.ko-fi.com/cdn/useruploads/b58e1a16-3acf-47eb-9723-75c35bbfa071_bcd1d64d-9015-4a2e-9b5d-a333341bd708.png'
+            },
+            {
+                id: '57',
+                name: 'Zumpad',
+                category: 'website',
+                tags: ['notizen', 'online', 'tools'],
+                location: {
+                    portable: 'https://zumpad.zum.de/'
+                },
+                website: 'https://zumpad.zum.de/',
+                description: 'Ein einfaches Online-Tool zum Erstellen und Teilen von Notizen.',
+                logo: 'https://zumpad.zum.de/favicon.ico'
+            },
+            {
+                id: '58',
+                name: 'DesktopOK',
+                category: 'portable',
+                tags: ['desktop', 'verwaltung', 'tools'],
+                location: {
+                    portable: 'resources/executable/desktopok.exe'
+                },
+                website: 'https://www.softwareok.de/?seite=Freeware/DesktopOK',
+                description: 'Ein kleines Tool zur Speicherung und Wiederherstellung der Desktop-Icon-Positionen.',
+                logo: 'https://img.netzwelt.de/picture/original/2024/08/desktopok-logo-411650.png'
             },
         ];
     }
@@ -1826,29 +1947,92 @@ class ToolManager {
     }
 
     loadBlueLightFilterSettings() {
-        const enabled = localStorage.getItem('blueLightFilter') === 'true';
+        const settings = {
+            enabled: localStorage.getItem('blueLightFilter') === 'true',
+            strength: localStorage.getItem('blueLightFilterStrength') || 50
+        };
+
+        this.initializeFilterControls(settings);
+        this.initializeFilterPresets();
         
-        const checkbox = document.getElementById('blueLightFilter');
-        
-        checkbox.checked = enabled;
-        
-        if (enabled) {
-            document.body.classList.add('blue-light-filter');
-            document.documentElement.style.setProperty('--blue-light-filter-strength', '0.5');
+        if (settings.enabled) {
+            this.applyFilter(settings);
         }
-        
-        // Event Listener für Checkbox
-        checkbox.addEventListener('change', (e) => {
+    }
+
+    initializeFilterControls(settings) {
+        const elements = {
+            checkbox: document.getElementById('blueLightFilter'),
+            container: document.querySelector('.blue-light-filter-settings'),
+            strength: document.getElementById('blueLightFilterStrength'),
+            strengthValue: document.querySelector('.strength-value')
+        };
+
+        // Setze initiale Werte
+        elements.checkbox.checked = settings.enabled;
+        elements.container.style.display = settings.enabled ? 'block' : 'none';
+        elements.strength.value = settings.strength;
+        elements.strengthValue.textContent = `${settings.strength}%`;
+
+        // Event Listener
+        elements.checkbox.addEventListener('change', (e) => {
             const isEnabled = e.target.checked;
+            elements.container.style.display = isEnabled ? 'block' : 'none';
             localStorage.setItem('blueLightFilter', isEnabled);
             
             if (isEnabled) {
-                document.body.classList.add('blue-light-filter');
-                document.documentElement.style.setProperty('--blue-light-filter-strength', '0.5');
+                this.applyFilter(this.getCurrentSettings());
             } else {
-                document.body.classList.remove('blue-light-filter');
+                this.removeFilter();
             }
         });
+
+        elements.strength.addEventListener('input', (e) => {
+            const value = e.target.value;
+            elements.strengthValue.textContent = `${value}%`;
+            localStorage.setItem('blueLightFilterStrength', value);
+            if (elements.checkbox.checked) {
+                this.updateFilterStrength(value);
+            }
+        });
+    }
+
+    initializeFilterPresets() {
+        const presetButtons = document.querySelectorAll('.preset-buttons button');
+        presetButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const strength = button.dataset.strength;
+                
+                document.getElementById('blueLightFilterStrength').value = strength;
+                document.querySelector('.strength-value').textContent = `${strength}%`;
+                
+                localStorage.setItem('blueLightFilterStrength', strength);
+                
+                if (document.getElementById('blueLightFilter').checked) {
+                    this.applyFilter(this.getCurrentSettings());
+                }
+            });
+        });
+    }
+
+    getCurrentSettings() {
+        return {
+            enabled: document.getElementById('blueLightFilter').checked,
+            strength: document.getElementById('blueLightFilterStrength').value
+        };
+    }
+
+    applyFilter(settings) {
+        document.body.classList.add('blue-light-filter');
+        document.documentElement.style.setProperty('--blue-light-filter-strength', settings.strength / 100);
+    }
+
+    removeFilter() {
+        document.body.classList.remove('blue-light-filter');
+    }
+
+    updateFilterStrength(value) {
+        document.documentElement.style.setProperty('--blue-light-filter-strength', value / 100);
     }
 
     loadShortcuts() {
@@ -2448,7 +2632,7 @@ class ToolManager {
             <p>${message}</p>
             <div class="confirm-dialog-buttons">
                 <button class="cancel-btn">Abbrechen</button>
-                <button class="confirm-btn">Löschen</button>
+                <button class="confirm-btn">Herunterladen</button>
             </div>
         `;
         
@@ -2495,6 +2679,128 @@ class ToolManager {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
         }, 3000);
+    }
+
+    showUpdateDialog(title, message, downloadUrl) {
+        const overlay = document.createElement('div');
+        overlay.className = 'update-overlay';
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'update-dialog';
+        dialog.innerHTML = `
+            <h3>${title}</h3>
+            <p>${message}</p>
+            <div class="download-progress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill">
+                        <div class="progress-glow"></div>
+                    </div>
+                </div>
+                <div class="progress-info">
+                    <span class="progress-text">0%</span>
+                    <i class="fas fa-download"></i>
+                </div>
+            </div>
+            <div class="confirm-dialog-buttons">
+                <button class="cancel-btn">Abbrechen</button>
+                <button class="confirm-btn">
+                    <i class="fas fa-download"></i>
+                    Herunterladen
+                </button>
+            </div>
+        `;
+        
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+        
+        const cancelBtn = dialog.querySelector('.cancel-btn');
+        const confirmBtn = dialog.querySelector('.confirm-btn');
+        const progressBar = dialog.querySelector('.download-progress');
+        const progressFill = dialog.querySelector('.progress-fill');
+        const progressText = dialog.querySelector('.progress-text');
+        const downloadIcon = dialog.querySelector('.progress-info i');
+        
+        let isDownloading = false;
+        let downloadAborted = false;
+        
+        cancelBtn.addEventListener('click', () => {
+            if (isDownloading) {
+                downloadAborted = true;
+                this.showToast('Download abgebrochen', 'info');
+            }
+            overlay.remove();
+        });
+        
+        confirmBtn.addEventListener('click', async () => {
+            if (isDownloading) return;
+            
+            isDownloading = true;
+            downloadAborted = false;
+            confirmBtn.disabled = true;
+            cancelBtn.textContent = 'Abbrechen';
+            progressBar.style.display = 'block';
+            
+            try {
+                const filePath = await window.electronAPI.downloadUpdate(downloadUrl, (progress) => {
+                    if (downloadAborted) return;
+                    progressFill.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+                    
+                    if (progress === 100) {
+                        downloadIcon.className = 'fas fa-check';
+                        downloadIcon.style.color = '#2ecc71';
+                    }
+                });
+                
+                if (!downloadAborted) {
+                    this.showToast('Update wurde heruntergeladen', 'info');
+                    window.electronAPI.launchTool(filePath);
+                    overlay.remove();
+                }
+            } catch (error) {
+                console.error('Download-Fehler:', error);
+                this.showToast(`Fehler beim Herunterladen des Updates: ${error.message}`, 'error');
+                isDownloading = false;
+                confirmBtn.disabled = false;
+                progressBar.style.display = 'none';
+                downloadIcon.className = 'fas fa-exclamation-circle';
+                downloadIcon.style.color = '#e74c3c';
+            }
+        });
+    }
+
+    setupUpdateCheck() {
+        // Aktuelle Version anzeigen
+        const currentVersionSpan = document.getElementById('currentVersion');
+        currentVersionSpan.textContent = window.electronAPI.getCurrentVersion();
+
+        // Update-Check Button
+        const checkUpdateBtn = document.getElementById('checkUpdateBtn');
+        checkUpdateBtn.addEventListener('click', async () => {
+            try {
+                checkUpdateBtn.style.pointerEvents = 'none';
+                const icon = checkUpdateBtn.querySelector('i');
+                icon.classList.add('fa-spin');
+
+                const updateInfo = await window.electronAPI.checkForUpdates();
+                
+                if (updateInfo.updateAvailable) {
+                    this.showUpdateDialog(
+                        'Update verfügbar',
+                        `Eine neue Version (${updateInfo.latestVersion}) ist verfügbar.`,
+                        updateInfo.downloadUrl
+                    );
+                } else {
+                    this.showToast('Sie verwenden bereits die neueste Version.', 'info');
+                }
+            } catch (error) {
+                this.showToast('Fehler beim Prüfen auf Updates. Bitte versuchen Sie es später erneut.', 'error');
+            } finally {
+                checkUpdateBtn.style.pointerEvents = 'auto';
+                const icon = checkUpdateBtn.querySelector('i');
+                icon.classList.remove('fa-spin');
+            }
+        });
     }
 }
 
