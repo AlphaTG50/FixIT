@@ -1,8 +1,8 @@
-22.02.2025 - 1.1.4
+FixIT v1.1.3
 
-- Neue Funktionen:
-    - Teamviewer, Anydesk, installedpackagesview.exe hinzugefügt
-    - Blaulichtfilter
+### Features
+- Tools hinzugefügt: Anydesk, Teamviewer QS, InstalledPackagesView, PST Viewer, Speedometer 2.0
 
--Anpassungen:
-    - Sortierung der Einstellungen
+### Improvements
+- Design von Blaulichfilter Einstellungen angepasst
+- Easter-Eggs entfernt wegen zuvielen Fehlern
