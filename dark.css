@@ -547,57 +547,40 @@
     color: #5F9EDC;
 }
 
-/* Easter Eggs Modal Dark Mode */
-[data-theme="dark"] .easter-egg-item {
-    background: #252525;
-    border-color: #404040;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+/* Blaulichtfilter Dark Mode Anpassungen */
+[data-theme="dark"] .blue-light-filter-settings {
+    background: rgba(95, 158, 220, 0.1);
 }
 
-[data-theme="dark"] .easter-egg-status {
-    color: #A0D0F9;
-    opacity: 0.8;
-}
-
-[data-theme="dark"] .easter-egg-status[data-unlocked="true"] {
-    background: #27ae60;
-    color: white;
-    opacity: 1;
-}
-
-[data-theme="dark"] .easter-egg-hint {
-    color: #A0D0F9;
-    opacity: 0.6;
-}
-
-/* Bestätigungsdialog Dark Mode */
-[data-theme="dark"] .confirm-dialog {
+[data-theme="dark"] .strength-controller {
     background: #252525;
     border-color: #404040;
 }
 
-[data-theme="dark"] .cancel-btn {
+[data-theme="dark"] .strength-btn {
+    background: #A0D0F9;
+    color: #1E1E1E;
+}
+
+[data-theme="dark"] .strength-btn:hover {
+    background: #5F9EDC;
+}
+
+[data-theme="dark"] .strength-display {
     background: #1E1E1E;
-    border-color: #404040 !important;
-    color: #A0D0F9;
-}
-
-[data-theme="dark"] .easter-egg-solution {
     border-color: #404040;
-}
-
-[data-theme="dark"] .solution-text {
-    color: #5F9EDC;
-}
-
-[data-theme="dark"] .solution-description {
     color: #A0D0F9;
 }
 
-[data-theme="dark"] .reset-easter-eggs-btn {
+[data-theme="dark"] .preset-buttons button {
+    background: #252525;
+    border-color: #404040;
     color: #A0D0F9;
 }
 
-[data-theme="dark"] .reset-easter-eggs-btn:hover {
-    color: #5F9EDC;
+[data-theme="dark"] .preset-buttons button:hover,
+[data-theme="dark"] .preset-buttons button.active {
+    background: #A0D0F9;
+    color: #1E1E1E;
+    border-color: #A0D0F9;
 }

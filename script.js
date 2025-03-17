@@ -52,7 +52,6 @@ class ToolManager {
         // Initialisiere die Shortcut-Anzeige
         this.updateAllShortcutDisplays();
         this.setupShortcuts();
-        this.setupEasterEggs();
         this.setupUpdateCheck();
     }
 
@@ -904,6 +903,66 @@ class ToolManager {
                 website: 'https://www.softwareok.de/?seite=Freeware/DesktopOK',
                 description: 'Ein kleines Tool zur Speicherung und Wiederherstellung der Desktop-Icon-Positionen.',
                 logo: 'https://img.netzwelt.de/picture/original/2024/08/desktopok-logo-411650.png'
+            },
+            {
+                id: '59',
+                name: 'AnyDesk',
+                category: 'portable',
+                tags: ['remote', 'zugriff', 'tools'],
+                location: {
+                    portable: 'resources/executable/anydesk.exe'
+                },
+                website: 'https://anydesk.com/',
+                description: 'Schneller und sicherer Fernzugriff auf Computer.',
+                logo: 'https://anydesk.com/favicon.ico'
+            },
+            {
+                id: '60',
+                name: 'TeamViewer',
+                category: 'portable',
+                tags: ['remote', 'zugriff', 'tools'],
+                location: {
+                    portable: 'resources/executable/teamviewer.exe'
+                },
+                website: 'https://www.teamviewer.com/',
+                description: 'Fernzugriff und Fernsupport für Computer und mobile Geräte.',
+                logo: 'https://www.teamviewer.com/favicon.ico'
+            },
+            {
+                id: '61',
+                name: 'Speedometer 2.0',
+                category: 'website',
+                tags: ['benchmark', 'browser', 'performance'],
+                location: {
+                    portable: 'https://browserbench.org/Speedometer2.0/'
+                },
+                website: 'https://browserbench.org/Speedometer2.0/',
+                description: 'Ein Benchmark-Tool zur Messung der Leistung von Webbrowsern.',
+                logo: 'https://browserbench.org/Speedometer2.0/resources/logo.png'
+            },
+            {
+                id: '62',
+                name: 'PST Viewer',
+                category: 'website',
+                tags: ['email', 'viewer', 'tools'],
+                location: {
+                    portable: 'https://goldfynch.com/pst-viewer'
+                },
+                website: 'https://goldfynch.com/pst-viewer',
+                description: 'Ein Tool zum Anzeigen von PST-Dateien.',
+                logo: 'https://goldfynch.com/img/logo_square.png'
+            },
+            {
+                id: '63',
+                name: 'InstalledPackagesView',
+                category: 'portable',
+                tags: ['verwaltung', 'tools'],
+                location: {
+                    portable: 'resources/executable/installedpackagesview.exe'
+                },
+                website: 'https://www.nirsoft.net/utils/installed_packages_view.html',
+                description: 'Zeigt eine Liste aller installierten Programme auf dem Computer an.',
+                logo: 'https://www.nirsoft.net/favicon.ico'
             },
         ];
     }
@@ -1946,93 +2005,135 @@ class ToolManager {
         }
     }
 
-    loadBlueLightFilterSettings() {
-        const settings = {
-            enabled: localStorage.getItem('blueLightFilter') === 'true',
-            strength: localStorage.getItem('blueLightFilterStrength') || 50
-        };
-
-        this.initializeFilterControls(settings);
-        this.initializeFilterPresets();
-        
-        if (settings.enabled) {
-            this.applyFilter(settings);
-        }
-    }
-
     initializeFilterControls(settings) {
-        const elements = {
-            checkbox: document.getElementById('blueLightFilter'),
-            container: document.querySelector('.blue-light-filter-settings'),
-            strength: document.getElementById('blueLightFilterStrength'),
-            strengthValue: document.querySelector('.strength-value')
-        };
-
-        // Setze initiale Werte
-        elements.checkbox.checked = settings.enabled;
-        elements.container.style.display = settings.enabled ? 'block' : 'none';
-        elements.strength.value = settings.strength;
-        elements.strengthValue.textContent = `${settings.strength}%`;
-
-        // Event Listener
-        elements.checkbox.addEventListener('change', (e) => {
-            const isEnabled = e.target.checked;
-            elements.container.style.display = isEnabled ? 'block' : 'none';
-            localStorage.setItem('blueLightFilter', isEnabled);
-            
-            if (isEnabled) {
-                this.applyFilter(this.getCurrentSettings());
-            } else {
-                this.removeFilter();
-            }
-        });
-
-        elements.strength.addEventListener('input', (e) => {
-            const value = e.target.value;
-            elements.strengthValue.textContent = `${value}%`;
-            localStorage.setItem('blueLightFilterStrength', value);
-            if (elements.checkbox.checked) {
-                this.updateFilterStrength(value);
-            }
-        });
-    }
-
-    initializeFilterPresets() {
+        const blueLightFilter = document.getElementById('blueLightFilter');
+        const filterSettings = document.querySelector('.blue-light-filter-settings');
+        const decreaseBtn = document.querySelector('.decrease-btn');
+        const increaseBtn = document.querySelector('.increase-btn');
+        const strengthDisplay = document.querySelector('.strength-display');
         const presetButtons = document.querySelectorAll('.preset-buttons button');
+        
+        // Aktuelle Stärke als Variable
+        let currentStrength = settings?.strength || 50;
+        
+        // Anzeige aktualisieren
+        const updateDisplay = () => {
+            strengthDisplay.value = `${currentStrength}%`;
+            document.documentElement.style.setProperty('--blue-light-filter-strength', currentStrength / 100);
+            
+            localStorage.setItem('blueLightFilterSettings', JSON.stringify({
+                enabled: blueLightFilter.checked,
+                strength: currentStrength
+            }));
+        };
+        
+        // Event Listener für Plus/Minus Buttons
+        decreaseBtn.addEventListener('click', () => {
+            if (currentStrength > 0) {
+                currentStrength = Math.max(0, currentStrength - 10);
+                updateDisplay();
+            }
+        });
+        
+        increaseBtn.addEventListener('click', () => {
+            if (currentStrength < 100) {
+                currentStrength = Math.min(100, currentStrength + 10);
+                updateDisplay();
+            }
+        });
+        
+        // Event Listener für Voreinstellungen
         presetButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const strength = button.dataset.strength;
+                // Entferne active Klasse von allen Buttons
+                presetButtons.forEach(btn => btn.classList.remove('active'));
                 
-                document.getElementById('blueLightFilterStrength').value = strength;
-                document.querySelector('.strength-value').textContent = `${strength}%`;
+                // Füge active Klasse zum geklickten Button hinzu
+                button.classList.add('active');
                 
-                localStorage.setItem('blueLightFilterStrength', strength);
-                
-                if (document.getElementById('blueLightFilter').checked) {
-                    this.applyFilter(this.getCurrentSettings());
+                // Setze die Stärke entsprechend der Voreinstellung
+                currentStrength = parseInt(button.dataset.strength);
+                updateDisplay();
+            });
+        });
+        
+        // Checkbox Event Listener
+        blueLightFilter.addEventListener('change', () => {
+            filterSettings.style.display = blueLightFilter.checked ? 'block' : 'none';
+            
+            if (blueLightFilter.checked) {
+                document.body.classList.add('blue-light-filter');
+                updateDisplay();
+            } else {
+                document.body.classList.remove('blue-light-filter');
+            }
+            
+            // Speichere den Status
+            localStorage.setItem('blueLightFilterSettings', JSON.stringify({
+                enabled: blueLightFilter.checked,
+                strength: currentStrength
+            }));
+        });
+        
+        // Initialisiere mit gespeicherten Einstellungen
+        if (settings?.enabled) {
+            blueLightFilter.checked = true;
+            filterSettings.style.display = 'block';
+            document.body.classList.add('blue-light-filter');
+            currentStrength = settings.strength;
+            updateDisplay();
+            
+            // Setze den entsprechenden Preset-Button auf aktiv
+            presetButtons.forEach(button => {
+                if (parseInt(button.dataset.strength) === currentStrength) {
+                    button.classList.add('active');
                 }
             });
+        }
+
+        // Füge Event Listener für manuelle Eingabe hinzu
+        strengthDisplay.addEventListener('input', (e) => {
+            // Entferne alle nicht-numerischen Zeichen außer %
+            let value = e.target.value.replace(/[^\d%]/g, '');
+            
+            // Entferne % wenn vorhanden
+            value = value.replace('%', '');
+            
+            // Konvertiere zu Nummer
+            let number = parseInt(value);
+            
+            // Begrenze auf 0-100
+            if (!isNaN(number)) {
+                number = Math.min(100, Math.max(0, number));
+                currentStrength = number;
+                
+                // Füge % wieder hinzu
+                e.target.value = `${number}%`;
+            }
+        });
+
+        // Event Listener für Enter-Taste
+        strengthDisplay.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                strengthDisplay.blur();
+                updateDisplay();
+            }
+        });
+
+        // Event Listener für Fokus-Verlust
+        strengthDisplay.addEventListener('blur', () => {
+            updateDisplay();
         });
     }
 
-    getCurrentSettings() {
-        return {
-            enabled: document.getElementById('blueLightFilter').checked,
-            strength: document.getElementById('blueLightFilterStrength').value
+    // Füge diese Funktion zu deiner bestehenden loadBlueLightFilterSettings Funktion hinzu oder erstelle sie neu
+    loadBlueLightFilterSettings() {
+        const settings = JSON.parse(localStorage.getItem('blueLightFilterSettings')) || {
+            enabled: false,
+            strength: 50
         };
-    }
-
-    applyFilter(settings) {
-        document.body.classList.add('blue-light-filter');
-        document.documentElement.style.setProperty('--blue-light-filter-strength', settings.strength / 100);
-    }
-
-    removeFilter() {
-        document.body.classList.remove('blue-light-filter');
-    }
-
-    updateFilterStrength(value) {
-        document.documentElement.style.setProperty('--blue-light-filter-strength', value / 100);
+        this.initializeFilterControls(settings);
     }
 
     loadShortcuts() {
@@ -2321,452 +2422,6 @@ class ToolManager {
         setTimeout(() => {
             confirmMessage.remove();
         }, 2000);
-    }
-
-    setupEasterEggs() {
-        // Lade bereits gefundene Easter Eggs
-        this.loadUnlockedEasterEggs();
-        
-        document.getElementById('easterEggsBtn').addEventListener('click', () => {
-            this.showEasterEggsModal();
-        });
-        
-        document.getElementById('closeEasterEggsBtn').addEventListener('click', () => {
-            this.hideEasterEggsModal();
-        });
-        
-        // Reset Button für Easter Eggs
-        document.getElementById('resetEasterEggsBtn').addEventListener('click', () => {
-            this.showConfirmDialog(
-                'Easter Eggs zurücksetzen',
-                'Möchtest du wirklich alle gefundenen Easter Eggs zurücksetzen?',
-                () => {
-                    localStorage.removeItem('unlockedEasterEggs');
-                    document.querySelectorAll('.easter-egg-item').forEach(item => {
-                        const status = item.querySelector('.easter-egg-status');
-                        const solution = item.querySelector('.easter-egg-solution');
-                        status.textContent = 'Noch nicht gefunden';
-                        status.setAttribute('data-unlocked', 'false');
-                        if (solution) solution.style.display = 'none';
-                    });
-                    
-                    // Bestätigung anzeigen
-                    const confirmMessage = document.createElement('div');
-                    confirmMessage.className = 'shortcut-confirm';
-                    confirmMessage.innerHTML = '<i class="fas fa-check"></i> Alle Easter Eggs wurden zurückgesetzt';
-                    document.querySelector('.easter-eggs-modal').appendChild(confirmMessage);
-                    
-                    setTimeout(() => {
-                        confirmMessage.remove();
-                    }, 2000);
-                }
-            );
-        });
-        
-        // Konami Code
-        let konamiCode = '';
-        const validCode = 'ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba';
-        
-        document.addEventListener('keydown', (e) => {
-            konamiCode += e.key;
-            if (konamiCode.length > validCode.length) {
-                konamiCode = konamiCode.slice(-validCode.length);
-            }
-            
-            if (konamiCode === validCode) {
-                this.unlockEasterEgg('konami');
-                // Liste aller Elemente, die den Regenbogen-Effekt bekommen sollen
-                const elements = [
-                    '.container',
-                    '.tool-card',
-                    '.sidebar',
-                    '.tool-logo',
-                    '.shortcut-group',
-                    '.nav-item',
-                    '.scroll-to-top',
-                    'kbd',
-                    '.tool-tag'
-                ];
-                
-                // Füge die Animation zu allen Elementen hinzu
-                elements.forEach(selector => {
-                    document.querySelectorAll(selector).forEach(element => {
-                        element.style.animation = 'rainbow 2s linear infinite';
-                    });
-                });
-                
-                setTimeout(() => {
-                    // Entferne die Animation von allen Elementen
-                    elements.forEach(selector => {
-                        document.querySelectorAll(selector).forEach(element => {
-                            element.style.animation = '';
-                        });
-                    });
-                }, 5000);
-            }
-        });
-        
-        // Easter Egg Handler für die Suchleiste
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            if (e.target.value === '99') {
-                this.unlockEasterEgg('galaxy');
-                
-                const container = document.querySelector('.container');
-                const answer = document.createElement('div');
-                answer.className = 'galaxy-answer';
-                answer.innerHTML = `
-                    <div class="answer-content">
-                        <div class="download-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill"></div>
-                            </div>
-                            <div class="progress-number">0%</div>
-                        </div>
-                        <div class="answer-text">Download läuft...</div>
-                        <div class="answer-quote">Geschätzte Zeit: 5 Sekunden</div>
-                        <div class="loading-tips">
-                            <span class="tip">Tipp: Das könnte jetzt etwas länger dauern...</span>
-                            <span class="tip">Tipp: 99% - Fast geschafft!</span>
-                            <span class="tip">Tipp: Nur noch ein kleines bisschen...</span>
-                            <span class="tip">Tipp: Irgendwann muss es ja fertig werden...</span>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(answer);
-                
-                // Progress Animation
-                const progressFill = answer.querySelector('.progress-fill');
-                const progressNumber = answer.querySelector('.progress-number');
-                const timeText = answer.querySelector('.answer-quote');
-                let progress = 0;
-                
-                const progressInterval = setInterval(() => {
-                    if (progress < 99) {
-                        progress += 1;
-                        progressFill.style.width = `${progress}%`;
-                        progressNumber.textContent = `${progress}%`;
-                        
-                        if (progress === 99) {
-                            timeText.textContent = 'Geschätzte Zeit: ♾️';
-                        }
-                    }
-                }, 50); // Schnelle Animation bis 99%
-                
-                // Tips Animation
-                let currentTip = 0;
-                const tips = answer.querySelectorAll('.tip');
-                tips[0].classList.add('show');
-                
-                const tipInterval = setInterval(() => {
-                    tips[currentTip].classList.remove('show');
-                    currentTip = (currentTip + 1) % tips.length;
-                    tips[currentTip].classList.add('show');
-                }, 3000);
-                
-                // Cleanup nach 15 Sekunden
-                setTimeout(() => {
-                    clearInterval(progressInterval);
-                    clearInterval(tipInterval);
-                    answer.classList.add('fade-out');
-                    setTimeout(() => answer.remove(), 1000);
-                }, 15000);
-                
-                e.target.value = '';
-            }
-        });
-
-        // Füge diesen Code nach dem bestehenden Easter Egg Handler hinzu
-        searchInput.addEventListener('input', (e) => {
-            if (e.target.value.toLowerCase() === 'ticket') {
-                this.unlockEasterEgg('support');
-                
-                const container = document.querySelector('.container');
-                const answer = document.createElement('div');
-                answer.className = 'galaxy-answer support-ticket';
-                answer.innerHTML = `
-                    <div class="answer-content">
-                        <div class="ticket-header">
-                            <div class="ticket-number">#12345</div>
-                            <div class="ticket-priority">SUPER MEGA DRINGEND!!!</div>
-                        </div>
-                        <div class="chat-container">
-                        </div>
-                        <div class="ticket-footer">
-                            <div class="admin-status">Max Mustermann</div>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(answer);
-                const chatContainer = answer.querySelector('.chat-container');
-                
-                // Chat-Nachrichten mit Verzögerungen
-                const messages = [
-                    {
-                        type: 'user',
-                        time: '08:00',
-                        text: 'HILFE!!! Mein Bildschirm ist komplett schwarz!!!',
-                        delay: 1000
-                    },
-                    {
-                        type: 'admin',
-                        time: '08:01',
-                        text: 'Guten Morgen, keine Sorge, wir finden das Problem. Ist der PC eingeschaltet?',
-                        delay: 4000
-                    },
-                    {
-                        type: 'user',
-                        time: '08:15',
-                        text: 'Natürlich! Ich bin doch nicht dumm! Die Maus leuchtet auch!',
-                        delay: 8000
-                    },
-                    {
-                        type: 'admin',
-                        time: '08:16',
-                        text: 'Okay, und leuchtet die Power-LED am Monitor?',
-                        delay: 12000
-                    },
-                    {
-                        type: 'user',
-                        time: '08:30',
-                        text: 'Moment... der Stromstecker ist nicht eingesteckt. Jetzt FUNKTIONIERT ES!',
-                        delay: 16000
-                    },
-                    {
-                        type: 'admin',
-                        time: '08:31',
-                        text: '🤦',
-                        delay: 20000
-                    },
-                ];
-
-                // Funktion zum Hinzufügen einer Nachricht
-                const addMessage = (message) => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `chat-message ${message.type}`;
-                    messageDiv.innerHTML = `
-                        <div class="timestamp">${message.time}</div>
-                        <div class="message">${message.text}</div>
-                    `;
-                    chatContainer.appendChild(messageDiv);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                };
-
-                // Nachrichten nacheinander mit Verzögerungen anzeigen
-                messages.forEach(message => {
-                    setTimeout(() => {
-                        addMessage(message);
-                    }, message.delay);
-                });
-                
-                // Gesamte Animation nach 35 Sekunden beenden
-                setTimeout(() => {
-                    answer.classList.add('fade-out');
-                    setTimeout(() => answer.remove(), 1000);
-                }, 35000);
-                
-                e.target.value = '';
-            }
-        });
-    }
-
-    unlockEasterEgg(id) {
-        const unlockedEggs = JSON.parse(localStorage.getItem('unlockedEasterEggs') || '[]');
-        if (!unlockedEggs.includes(id)) {
-            unlockedEggs.push(id);
-            localStorage.setItem('unlockedEasterEggs', JSON.stringify(unlockedEggs));
-            this.showEasterEggNotification();
-        }
-        
-        const item = document.querySelector(`.easter-egg-item[data-id="${id}"]`);
-        if (item) {
-            const statusElement = item.querySelector('.easter-egg-status');
-            const solutionElement = item.querySelector('.easter-egg-solution');
-            
-            if (statusElement) {
-                statusElement.textContent = 'Gefunden!';
-                statusElement.setAttribute('data-unlocked', 'true');
-            }
-            
-            if (solutionElement) {
-                solutionElement.style.display = 'block';
-            }
-        }
-    }
-
-    loadUnlockedEasterEggs() {
-        const unlockedEggs = JSON.parse(localStorage.getItem('unlockedEasterEggs') || '[]');
-        unlockedEggs.forEach(id => {
-            const item = document.querySelector(`.easter-egg-item[data-id="${id}"]`);
-            if (item) {
-                const statusElement = item.querySelector('.easter-egg-status');
-                const solutionElement = item.querySelector('.easter-egg-solution');
-                
-                if (statusElement) {
-                    statusElement.textContent = 'Gefunden!';
-                    statusElement.setAttribute('data-unlocked', 'true');
-                }
-                
-                if (solutionElement) {
-                    solutionElement.style.display = 'block';
-                }
-            }
-        });
-    }
-
-    showEasterEggsModal() {
-        document.getElementById('easterEggsModal').style.display = 'block';
-    }
-    
-    hideEasterEggsModal() {
-        document.getElementById('easterEggsModal').style.display = 'none';
-    }
-
-    showConfirmDialog(title, message, onConfirm) {
-        const dialog = document.createElement('div');
-        dialog.className = 'confirm-dialog';
-        dialog.innerHTML = `
-            <h3>${title}</h3>
-            <p>${message}</p>
-            <div class="confirm-dialog-buttons">
-                <button class="cancel-btn">Abbrechen</button>
-                <button class="confirm-btn">Herunterladen</button>
-            </div>
-        `;
-        
-        document.body.appendChild(dialog);
-        
-        const cancelBtn = dialog.querySelector('.cancel-btn');
-        const confirmBtn = dialog.querySelector('.confirm-btn');
-        
-        cancelBtn.addEventListener('click', () => {
-            dialog.remove();
-        });
-        
-        confirmBtn.addEventListener('click', () => {
-            onConfirm();
-            dialog.remove();
-        });
-    }
-
-    showEasterEggNotification() {
-        // Entferne alte Benachrichtigungen
-        const oldNotification = document.querySelector('.easter-egg-notification');
-        if (oldNotification) oldNotification.remove();
-
-        // Erstelle neue Benachrichtigung
-        const notification = document.createElement('div');
-        notification.className = 'easter-egg-notification';
-        notification.innerHTML = `
-            <i class="fas fa-star"></i>
-            <div class="notification-content">
-                <div class="notification-title">Easter Egg gefunden!</div>
-                <div class="notification-message">Du hast ein verstecktes Feature entdeckt</div>
-            </div>
-        `;
-
-        document.body.appendChild(notification);
-
-        // Animation starten
-        requestAnimationFrame(() => {
-            notification.classList.add('show');
-        });
-
-        // Benachrichtigung nach 3 Sekunden ausblenden
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-
-    showUpdateDialog(title, message, downloadUrl) {
-        const overlay = document.createElement('div');
-        overlay.className = 'update-overlay';
-        
-        const dialog = document.createElement('div');
-        dialog.className = 'update-dialog';
-        dialog.innerHTML = `
-            <h3>${title}</h3>
-            <p>${message}</p>
-            <div class="download-progress" style="display: none;">
-                <div class="progress-bar">
-                    <div class="progress-fill">
-                        <div class="progress-glow"></div>
-                    </div>
-                </div>
-                <div class="progress-info">
-                    <span class="progress-text">0%</span>
-                    <i class="fas fa-download"></i>
-                </div>
-            </div>
-            <div class="confirm-dialog-buttons">
-                <button class="cancel-btn">Abbrechen</button>
-                <button class="confirm-btn">
-                    <i class="fas fa-download"></i>
-                    Herunterladen
-                </button>
-            </div>
-        `;
-        
-        overlay.appendChild(dialog);
-        document.body.appendChild(overlay);
-        
-        const cancelBtn = dialog.querySelector('.cancel-btn');
-        const confirmBtn = dialog.querySelector('.confirm-btn');
-        const progressBar = dialog.querySelector('.download-progress');
-        const progressFill = dialog.querySelector('.progress-fill');
-        const progressText = dialog.querySelector('.progress-text');
-        const downloadIcon = dialog.querySelector('.progress-info i');
-        
-        let isDownloading = false;
-        let downloadAborted = false;
-        
-        cancelBtn.addEventListener('click', () => {
-            if (isDownloading) {
-                downloadAborted = true;
-                this.showToast('Download abgebrochen', 'info');
-            }
-            overlay.remove();
-        });
-        
-        confirmBtn.addEventListener('click', async () => {
-            if (isDownloading) return;
-            
-            isDownloading = true;
-            downloadAborted = false;
-            confirmBtn.disabled = true;
-            cancelBtn.textContent = 'Abbrechen';
-            progressBar.style.display = 'block';
-            
-            try {
-                const filePath = await window.electronAPI.downloadUpdate(downloadUrl, (progress) => {
-                    if (downloadAborted) return;
-                    progressFill.style.width = `${progress}%`;
-                    progressText.textContent = `${progress}%`;
-                    
-                    if (progress === 100) {
-                        downloadIcon.className = 'fas fa-check';
-                        downloadIcon.style.color = '#2ecc71';
-                    }
-                });
-                
-                if (!downloadAborted) {
-                    this.showToast('Update wurde heruntergeladen', 'info');
-                    window.electronAPI.launchTool(filePath);
-                    overlay.remove();
-                }
-            } catch (error) {
-                console.error('Download-Fehler:', error);
-                this.showToast(`Fehler beim Herunterladen des Updates: ${error.message}`, 'error');
-                isDownloading = false;
-                confirmBtn.disabled = false;
-                progressBar.style.display = 'none';
-                downloadIcon.className = 'fas fa-exclamation-circle';
-                downloadIcon.style.color = '#e74c3c';
-            }
-        });
     }
 
     setupUpdateCheck() {

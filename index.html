@@ -157,15 +157,31 @@
                         <div class="blue-light-filter-settings" style="display: none;">
                             <div class="blue-light-filter-strength">
                                 <label>Intensität</label>
-                                <input type="range" id="blueLightFilterStrength" min="0" max="100" step="1">
-                                <span class="strength-value">50%</span>
+                                <div class="strength-controller">
+                                    <button class="strength-btn decrease-btn">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="strength-display" value="50%" pattern="[0-9]{1,3}%?" maxlength="4">
+                                    <button class="strength-btn increase-btn">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="blue-light-filter-presets">
                                 <label>Voreinstellungen</label>
                                 <div class="preset-buttons">
-                                    <button data-strength="30" data-color="warm">Leicht</button>
-                                    <button data-strength="60" data-color="warm">Mittel</button>
-                                    <button data-strength="90" data-color="warm">Stark</button>
+                                    <button data-strength="30">
+                                        <i class="fas fa-moon"></i>
+                                        Leicht
+                                    </button>
+                                    <button data-strength="60">
+                                        <i class="fas fa-adjust"></i>
+                                        Mittel
+                                    </button>
+                                    <button data-strength="90">
+                                        <i class="fas fa-sun"></i>
+                                        Stark
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -174,13 +190,6 @@
                 </section>
                 <section class="settings-section">
                     <h3>Extras</h3>
-                    <div class="setting-item clickable" id="easterEggsBtn">
-                        <div class="setting-content">
-                            <span>Easter Eggs</span>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                        <p class="setting-description">Entdecke versteckte Funktionen und Überraschungen</p>
-                    </div>
                     <div class="setting-item clickable" id="historyBtn">
                         <div class="setting-content">
                             <span>Verlauf</span>
@@ -195,7 +204,6 @@
                         </div>
                         <p class="setting-description">Verwalte und passe deine Shortcuts an</p>
                     </div>
-                </section>
                 </section>
                 <section class="settings-section">
                     <h3>Hilfe</h3>
@@ -213,11 +221,6 @@
                         </div>
                         <p class="setting-description">Melde einen Fehler oder schlage eine Verbesserung vor</p>
                     </div>
-
-
-
-
-
                 </section>
             </div>
         </div>
@@ -469,56 +472,6 @@
                                 <kbd>Alt</kbd> + <kbd>4</kbd>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="easterEggsModal" class="modal">
-        <div class="modal-content easter-eggs-modal">
-            <div class="modal-header">
-                <h2>Easter Eggs</h2>
-                <div class="modal-header-controls">
-                    <button class="reset-easter-eggs-btn" id="resetEasterEggsBtn" title="Zurücksetzen">
-                        <i class="fas fa-undo-alt"></i>
-                    </button>
-                    <button class="close-modal-btn" id="closeEasterEggsBtn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="easter-eggs-list">
-                <div class="easter-egg-item" data-id="konami">
-                    <div class="easter-egg-header">
-                        <h3><i class="fas fa-hat-wizard"></i> Kazuhisa's Vermächtnis</h3>
-                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
-                    </div>
-                    <p class="easter-egg-hint">1986 schuf Kazuhisa Hashimoto einen Code, der die Gaming-Welt für immer veränderte. Seine Schöpfung lebt bis heute weiter - eine Sequenz aus Pfeilen, die mit den Anfängen endet...</p>
-                    <div class="easter-egg-solution" style="display: none">
-                        <p class="solution-text">↑↑↓↓←→←→BA</p>
-                        <p class="solution-description">Der originale Konami Code wurde ursprünglich als Cheat für das Spiel Gradius entwickelt, weil es dem Entwickler zum Testen zu schwer war.</p>
-                    </div>
-                </div>
-                <div class="easter-egg-item" data-id="galaxy">
-                    <div class="easter-egg-header">
-                        <h3><i class="fas fa-download"></i> Der ewige Download</h3>
-                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
-                    </div>
-                    <p class="easter-egg-hint">99 Probleme, aber der Download ist nur eins davon...</p>
-                    <div class="easter-egg-solution" style="display: none">
-                        <p class="solution-text">99</p>
-                        <p class="solution-description">Der klassische 99%-Download - so nah am Ziel und doch so fern.</p>
-                    </div>
-                </div>
-                <div class="easter-egg-item" data-id="support">
-                    <div class="easter-egg-header">
-                        <h3><i class="fas fa-headset"></i> Ein Tag im Leben eines IT-Admins</h3>
-                        <span class="easter-egg-status" data-unlocked="false">Noch nicht gefunden</span>
-                    </div>
-                    <p class="easter-egg-hint">Haben Sie schon versucht, ein Ticket zu erstellen?</p>
-                    <div class="easter-egg-solution" style="display: none">
-                        <p class="solution-text">ticket</p>
-                        <p class="solution-description">Eine typische Support-Konversation, die jeder IT-Admin nur zu gut kennt. Und ja, Ein- und Ausschalten löst tatsächlich die meisten Probleme!</p>
                     </div>
                 </div>
             </div>
