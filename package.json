@@ -47,7 +47,7 @@
       "createStartMenuShortcut": true,
       "shortcutName": "FixIT",
       "uninstallDisplayName": "FixIT",
-      "artifactName": "FixIT.Setup.${version}.${ext}"
+      "artifactName": "FixIT.Setup.v${version}.${ext}"
     },
     "asar": true,
     "asarUnpack": [
