@@ -28,10 +28,6 @@
           "**/*.bat",
           "**/*.exe"
         ]
-      },
-      {
-        "from": "resources/.env",
-        "to": ".env"
       }
     ],
     "win": {
@@ -40,6 +36,9 @@
       ],
       "icon": "assets/images/logo/win/icon.ico",
       "requestedExecutionLevel": "requireAdministrator"
+    },
+    "portable": {
+      "artifactName": "FixIT.Portable.${version}.exe"
     },
     "nsis": {
       "oneClick": false,
