@@ -1,4 +1,4 @@
-![128x128](https://github.com/user-attachments/assets/ce8ecbc3-07b3-47ab-bf6e-97f44dd40486)
+![Image](https://github.com/user-attachments/assets/2b630484-6a41-454d-975e-2da5f97a1d80)
 
 # 🔷 Hi, I'm AlphaTG050!
 
