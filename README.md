@@ -1,4 +1,4 @@
-![Image](https://github.com/user-attachments/assets/2b630484-6a41-454d-975e-2da5f97a1d80)
+![Image](https://github.com/user-attachments/assets/1bd8083a-7303-491a-ad7c-c604c1592342)
 
 # 🔷 Hi, I'm AlphaTG050!
 
