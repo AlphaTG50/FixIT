@@ -43,18 +43,6 @@ Ich arbeite privat daran, neue Features, Bugfixes und Verbesserungen einzubauen.
 
 ---
 
-## 💡 Roadmap (optional)
-
-> ❓ Noch nicht festgelegt – Ideen & Feedback immer willkommen!
-
----
-
-## 📸 Screenshots (empfohlen)
-
-> 🔜 Du kannst hier später Screens einfügen, z. B. von der Hauptoberfläche, Tray-Icon etc.
-
----
-
 ## 📬 Kontakt
 
 [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/helpit.informatik)  
