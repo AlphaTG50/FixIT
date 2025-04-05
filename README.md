@@ -43,12 +43,6 @@ Ich arbeite privat daran, neue Features, Bugfixes und Verbesserungen einzubauen.
 
 ---
 
-## 📬 Kontakt
-
-[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/helpit.informatik)  
-
----
-
 ## 💖 Support Me
 
 Wenn du FixIT feierst und mich unterstützen willst:
