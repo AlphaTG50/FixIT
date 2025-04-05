@@ -43,12 +43,4 @@ Ich arbeite privat daran, neue Features, Bugfixes und Verbesserungen einzubauen.
 
 ---
 
-## 💖 Support Me
-
-Wenn du FixIT feierst und mich unterstützen willst:
-
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/AlphaTG050)  
-
----
-
 > © 2025 – Developed with ❤️ by **AlphaTG050**
