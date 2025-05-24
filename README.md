@@ -1,38 +1,46 @@
-![128x128](https://github.com/user-attachments/assets/ce8ecbc3-07b3-47ab-bf6e-97f44dd40486)
+![FixIT Banner](https://github.com/user-attachments/assets/1bd8083a-7303-491a-ad7c-c604c1592342)
 
-# 🔷 Hi, I'm AlphaTG050!
+# 🛠️ FixIT – Dein IT-Werkzeugkasten für den Alltag
 
-I'm a **System Integration Specialist** with a passion for technology and programming. 
+FixIT ist ein minimalistisches Tool für **Systemintegratoren** und **ITler**, das alltägliche Aufgaben vereinfacht.  
+Mit nur wenigen Klicks kannst du **.exe-Programme** und **Web-Tools** starten – alles zentral an einem Ort. Keine unnötige Suche mehr. Keine Komplexität.
 
+---
 
+## 🚀 Features
 
-## 🛠️ My Skills
-- 💻 **Programming Languages**: HTML, CSS, JavaScript, AutoIT
-- 📊 **Databases**: Firebase
-- 🖥️ **Scripting**: Proficient in PowerShell and CMD
-- 🎨 **Design**: Creating programs, websites, images, and logos
+- ✅ Starte beliebige `.exe`-Dateien direkt aus dem Tool
+- 🌐 Integrierte Web-Shortcuts zu hilfreichen Online-Tools
+- 🧠 Lokale Speicherung deiner Einstellungen (Autostart, Tray etc.)
+- 🐣 Easter Eggs für die Nerds unter uns
+- 📝 Log-Export-Funktion für schnellen Support
+- 🌙 Dark Mode Support
+- 🎓 Ideal für IT-Azubis, Techniker & Supporter
 
-## 🎯 Goals
-- 📈 Build more knowledge in **System Integration** and enhance my skills.
-- 🎓 Master the programming languages I've learned.
-- 🛠️ Develop my own software and websites.
+---
 
-## 🤔 Why This Project?
+## 📦 Installation
 
-In the rapidly evolving field of IT, system integration specialists face the constant challenge of managing a myriad of tools and processes to ensure seamless and efficient operations. This project was born out of the need to simplify and streamline the complex tasks involved in system integration and administrative management.
+1. [Hier klicken für den Installer](https://github.com/AlphaTG50/FixIT/releases/latest)  
+2. Setup ausführen und FixIT starten  
+3. Direkt durchstarten – keine zusätzliche Konfiguration notwendig
 
-### The Challenge
+---
 
-System integration involves connecting different subsystems and ensuring they work together as a cohesive whole. This often requires the use of various tools, scripts, and platforms, each with its own set of functionalities and complexities. For an IT professional, juggling these multiple tools can be time-consuming and prone to errors, leading to decreased productivity and increased frustration.
+## 🧠 Warum FixIT?
 
-## 📥 Download
-- [Latest Release](https://github.com/AlphaTG50/FixIT/releases/latest) - Download the latest version of FixIT.
+Im IT-Alltag jonglierst du mit dutzenden Tools, Webseiten und Skripten.  
+**FixIT** bringt Ordnung rein – und spart dir Zeit, Nerven und Klicks.  
+Ein Must-have für alle, die schnell und smart arbeiten wollen.
 
+---
 
-## 📫 Contact
-[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/helpit.informatik) 
+## 📈 Entwicklung & Updates
 
-## 💖 Support Me
-If you appreciate my work and want to support me, consider making a donation via PayPal:
+FixIT wird regelmäßig weiterentwickelt.  
+Ich arbeite privat daran, neue Features, Bugfixes und Verbesserungen einzubauen.  
+👉 Aktuelle Version: **[Hier checken](https://github.com/AlphaTG50/FixIT/releases/latest)**
 
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/AlphaTG050) 
+---
+
+> © 2025 – Developed with ❤️ by **AlphaTG050**
