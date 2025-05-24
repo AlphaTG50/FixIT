@@ -6,6 +6,7 @@ const process = require('process');
 const fs = require('fs');
 const JSZip = require('jszip');
 
+
 // Fügen Sie App-Metadaten hinzu
 app.setAppUserModelId('com.helpit.tools');
 
@@ -16,15 +17,19 @@ function createWindow() {
         frame: false,
         minWidth: 580,
         minHeight: 600,
+        icon: path.join(__dirname, 'assets/images/logo/win/icon.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
-            devTools: true
+            devTools: false
         }
     });
 
     win.loadFile('index.html');
+
+    // DevTools beim Start öffnen (für Debugging)
+    // win.webContents.openDevTools();
 
     win.once('ready-to-show', () => {
         win.show();
@@ -73,8 +78,10 @@ app.on('window-all-closed', () => {
 ipcMain.on('launch-tool', (event, toolPath) => {
     if (toolPath.startsWith('mailto:')) {
         shell.openExternal(toolPath);
+        event.reply('tool-launched', true);
     } else if (toolPath.startsWith('http')) {
         shell.openExternal(toolPath);
+        event.reply('tool-launched', true);
     } else {
         let absolutePath;
         if (toolPath.startsWith('resources/executable')) {
@@ -91,16 +98,28 @@ ipcMain.on('launch-tool', (event, toolPath) => {
         
         // PowerShell-Skripte mit erhöhten Rechten ausführen
         if (absolutePath.endsWith('.ps1')) {
-            exec(`powershell -ExecutionPolicy Bypass -File "${absolutePath}"`, (error) => {
+            const process = exec(`powershell -ExecutionPolicy Bypass -File "${absolutePath}"`, (error) => {
                 if (error) {
                     console.error('Error launching PowerShell script:', error);
+                    event.reply('tool-launched', false);
                 }
             });
+            
+            // Überwache den Prozess-Start
+            process.on('spawn', () => {
+                event.reply('tool-launched', true);
+            });
         } else {
-            exec(`"${absolutePath}"`, (error) => {
+            const process = exec(`"${absolutePath}"`, (error) => {
                 if (error) {
                     console.error('Error launching tool:', error);
+                    event.reply('tool-launched', false);
                 }
+            });
+            
+            // Überwache den Prozess-Start
+            process.on('spawn', () => {
+                event.reply('tool-launched', true);
             });
         }
     }
@@ -170,7 +189,7 @@ ipcMain.handle('save-and-open-zip', async (event, files) => {
 });
 
 // Handler für Ordner öffnen
-ipcMain.on('show-folder', (event, folderPath) => {
-    const absolutePath = path.join(__dirname, folderPath);
-    shell.openPath(absolutePath);
+ipcMain.on('show-folder', (event, filePath) => {
+    const folder = path.dirname(filePath);
+    shell.openPath(folder);
 }); 

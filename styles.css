@@ -1,10 +1,10 @@
 :root {
-    --primary-color: #2D5D8C;
-    --secondary-color: #5F9EDC;
-    --accent-color: #5F9EDC;
+    --primary-color: #2B8FD7;
+    --secondary-color: #2B8FD7;
+    --accent-color: #2B8FD7;
     --background-color: #F5F9FF;
     --card-color: #FFFFFF;
-    --text-color: #2D5D8C;
+    --text-color: #2B8FD7;
     --border-color: #E1EEFF;
     --border-radius: 8px;
     --theme-transition: 0.2s ease;
@@ -514,8 +514,6 @@ input, select, textarea {
     width: 30px;
     height: 30px;
     transition: all 0.3s ease;
-    /* Light Mode Logo Farbe - #2D5D8C */
-    filter: invert(36%) sepia(15%) saturate(1235%) hue-rotate(176deg) brightness(92%) contrast(89%);
 }
 
 .titlebar-title {
@@ -525,6 +523,7 @@ input, select, textarea {
     opacity: 0.9;
     letter-spacing: 0.3px;
     transition: color var(--theme-transition);
+    margin-left: 3px;
 }
 
 .window-controls {
@@ -2197,9 +2196,6 @@ input, select, textarea {
     width: 120px;
     height: 120px;
     animation: pulse 2s infinite;
-    /* Light Mode Logo Farbe - #2D5D8C */
-    filter: invert(36%) sepia(15%) saturate(1235%) hue-rotate(176deg) brightness(92%) contrast(89%);
-    transition: filter var(--theme-transition);
 }
 
 .loading-text {
@@ -2280,10 +2276,15 @@ input, select, textarea {
 }
 
 /* Logos und Icons - nur Filter-Transition */
-.loading-logo,
+
 .titlebar-logo,
 .tool-logo {
     transition: filter var(--theme-transition);
+
+}
+.titlebar-logo {
+width: 25px;
+height: 25px;
 }
 
 /* Text-Farben-Transition */
@@ -2813,16 +2814,6 @@ button {
     100% { filter: hue-rotate(360deg); }
 }
 
-/* Spezielle Setting Items */
-#clearFavoritesBtn.setting-item:hover {
-    border-color: #e74c3c;
-    background: rgba(231, 76, 60, 0.05);
-}
-
-#clearFavoritesBtn.setting-item i {
-    color: #e74c3c;
-}
-
 /* Bestätigungsdialog */
 .confirm-dialog {
     position: fixed;
@@ -3259,7 +3250,7 @@ kbd,
 }
 
 .confirm-btn:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     transform: translateY(-1px);
 }
 
@@ -3372,7 +3363,7 @@ kbd,
 }
 
 .confirm-btn:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--text-color);
     transform: translateY(-1px);
 }
 
@@ -3641,4 +3632,47 @@ kbd,
 
 .preset-buttons button:active {
     transform: scale(0.95);
+}
+
+.launch-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.launch-indicator.active {
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+}
+
+.launch-indicator i {
+    font-size: 24px;
+    animation: spin 1s linear infinite;
+}
+
+.launch-indicator p {
+    margin: 0;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

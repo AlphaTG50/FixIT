@@ -12,7 +12,7 @@
 <body>
     <div id="loadingScreen" class="loading-screen">
         <div class="loading-content">
-            <img src="assets/images/logo/helpit_white.svg" alt="FixIT Logo" class="loading-logo">
+            <img src="assets/images/logo/logo.png" alt="FixIT Logo" class="loading-logo">
             <div class="loading-text">FixIT wird geladen...</div>
             <div class="loading-bar">
                 <div class="loading-progress"></div>
@@ -22,7 +22,7 @@
     <div class="version-badge"></div>
     <div class="titlebar">
         <div class="titlebar-left">
-            <img src="assets/images/logo/helpit_white.svg" alt="IT-Tools Logo" class="titlebar-logo">
+            <img src="assets/images/logo/logo.png" alt="IT-Tools Logo" class="titlebar-logo">
             <span class="titlebar-title">FixIT</span>
         </div>
         <div class="window-controls">
@@ -131,13 +131,6 @@
                             <input type="checkbox" id="alwaysOnTop">
                         </label>
                         <p class="setting-description">Für alle, die gerne im Mittelpunkt stehen</p>
-                    </div>
-                    <div class="setting-item clickable" id="clearFavoritesBtn">
-                        <div class="setting-content">
-                            <span>Favoriten löschen</span>
-                            <i class="fas fa-trash"></i>
-                        </div>
-                        <p class="setting-description">Entferne alle gespeicherten Favoriten</p>
                     </div>
                 </section>
                 <section class="settings-section">
@@ -478,5 +471,9 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <div class="launch-indicator">
+        <i class="fas fa-spinner"></i>
+        <p>Software wird gestartet...</p>
+    </div>
 </body>
 </html>

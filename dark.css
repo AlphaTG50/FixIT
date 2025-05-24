@@ -1,7 +1,7 @@
 /* Farbvariablen */
 :root {
     --primary-color: #2D5D8C;
-    --secondary-color: #5F9EDC;
+    --secondary-color: #2469A2;
     --accent-color: #5F9EDC;
     --background-color: #F5F9FF;
     --card-color: #FFFFFF;
@@ -33,11 +33,7 @@
     background: var(--background-color);
 }
 
-/* Lade-Logo */
-[data-theme="dark"] .loading-logo {
-    filter: brightness(0) saturate(100%) invert(80%) sepia(40%) saturate(500%) hue-rotate(180deg);
-    transition: filter var(--theme-transition);
-}
+
 
 /* Tool-Kategorie */
 [data-theme="dark"] .tool-category {
@@ -77,7 +73,6 @@
 
 [data-theme="dark"] .titlebar-logo {
     /* Dark Mode Logo Farbe - Helles Blau */
-    filter: brightness(0) saturate(100%) invert(80%) sepia(40%) saturate(500%) hue-rotate(180deg);
     opacity: 0.9;
 }
 

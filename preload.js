@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const JSZip = require('jszip');
 const https = require('https');
+const { app } = require('electron');
 
 // Pfad zur .env Datei anpassen
 const envPath = process.env.NODE_ENV === 'development' 
@@ -15,7 +16,6 @@ require('dotenv').config({ path: envPath });
 const appVersion = require('./package.json').version;
 
 // GitHub API Konfiguration
-const GITHUB_TOKEN = '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';
 const GITHUB_API_URL = 'https://api.github.com/repos/AlphaTG50/FixIT/releases/latest';
 
 // Funktion zum Herunterladen des Updates
@@ -24,7 +24,6 @@ async function downloadUpdate(url, onProgress) {
         const options = {
             headers: {
                 'User-Agent': 'FixIT-App',
-                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': 'application/octet-stream'
             }
         };
@@ -86,23 +85,45 @@ async function checkForUpdates() {
         const options = {
             headers: {
                 'User-Agent': 'FixIT-App',
-                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json'
             }
         };
 
+        console.log('Starte Update-Prüfung...');
+        console.log('API URL:', GITHUB_API_URL);
+
         https.get(GITHUB_API_URL, options, (res) => {
+            console.log('API Antwort Status:', res.statusCode);
+            
             let data = '';
             res.on('data', (chunk) => data += chunk);
+            
             res.on('end', () => {
                 try {
+                    if (res.statusCode !== 200) {
+                        console.error('API Fehler:', data);
+                        reject(new Error(`GitHub API Fehler: ${res.statusCode} - ${data}`));
+                        return;
+                    }
+
                     const release = JSON.parse(data);
+                    console.log('Release Daten:', release);
+                    
+                    if (!release.tag_name) {
+                        reject(new Error('Keine Version gefunden'));
+                        return;
+                    }
+
                     const latestVersion = release.tag_name.replace('v', '');
                     const updateAvailable = compareVersions(latestVersion, appVersion) > 0;
                     
                     // Verwende die Assets-URL für private Repositories
                     const asset = release.assets.find(asset => asset.name.includes('Setup'));
                     const downloadUrl = asset ? asset.url : null;
+                    
+                    console.log('Aktuelle Version:', appVersion);
+                    console.log('Neueste Version:', latestVersion);
+                    console.log('Update verfügbar:', updateAvailable);
                     
                     resolve({
                         currentVersion: appVersion,
@@ -112,10 +133,14 @@ async function checkForUpdates() {
                         fileName: asset ? asset.name : null
                     });
                 } catch (error) {
+                    console.error('Fehler beim Verarbeiten der API-Antwort:', error);
                     reject(error);
                 }
             });
-        }).on('error', reject);
+        }).on('error', (error) => {
+            console.error('Netzwerkfehler:', error);
+            reject(error);
+        });
     });
 }
 
@@ -129,6 +154,47 @@ function compareVersions(v1, v2) {
         if (v1Parts[i] < v2Parts[i]) return -1;
     }
     return 0;
+}
+
+async function downloadLatestRelease() {
+    return new Promise((resolve, reject) => {
+        const options = {
+            headers: {
+                'User-Agent': 'FixIT-App'
+            }
+        };
+        https.get('https://api.github.com/repos/AlphaTG50/FixIT/releases/latest', options, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                try {
+                    const release = JSON.parse(data);
+                    const asset = release.assets.find(a =>
+                        a.name.startsWith('FixIT.Setup.v') && a.name.endsWith('.exe')
+                    );
+                    if (!asset) return reject('Keine passende Setup-Datei gefunden!');
+                    const downloadUrl = asset.browser_download_url;
+                    const downloadsPath = app.getPath('downloads');
+                    const filePath = path.join(downloadsPath, asset.name);
+
+                    // Jetzt die Datei herunterladen
+                    const file = fs.createWriteStream(filePath);
+                    https.get(downloadUrl, options, (response) => {
+                        response.pipe(file);
+                        file.on('finish', () => {
+                            file.close();
+                            resolve(filePath);
+                        });
+                    }).on('error', (err) => {
+                        fs.unlink(filePath, () => {});
+                        reject(err.message);
+                    });
+                } catch (e) {
+                    reject(e.message);
+                }
+            });
+        }).on('error', reject);
+    });
 }
 
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -179,5 +245,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
             console.error('Fehler beim Herunterladen des Updates:', error);
             throw error;
         }
-    }
+    },
+    downloadLatestRelease: downloadLatestRelease,
+    onToolLaunched: (callback) => ipcRenderer.on('tool-launched', (event, success) => callback(success))
 }); 

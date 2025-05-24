@@ -175,29 +175,6 @@ class ToolManager {
             e.preventDefault();
             this.submitBugReport();
         });
-        
-        // Favoriten löschen
-        document.getElementById('clearFavoritesBtn').addEventListener('click', () => {
-            this.showConfirmDialog(
-                'Favoriten löschen',
-                'Möchtest du wirklich alle Favoriten löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
-                () => {
-                    localStorage.removeItem('favorites');
-                    this.favorites = new Set();
-                    this.renderTools(this.currentFilteredTools);
-                    
-                    // Bestätigung anzeigen
-                    const confirmMessage = document.createElement('div');
-                    confirmMessage.className = 'shortcut-confirm';
-                    confirmMessage.innerHTML = '<i class="fas fa-check"></i> Alle Favoriten wurden gelöscht';
-                    document.querySelector('.modal-content').appendChild(confirmMessage);
-                    
-                    setTimeout(() => {
-                        confirmMessage.remove();
-                    }, 2000);
-                }
-            );
-        });
     }
 
     setupHistoryEventListeners() {
@@ -224,7 +201,7 @@ class ToolManager {
                 id: '1',
                 name: 'Everything',
                 category: 'portable',
-                tags: ['suche', 'dateien', 'windows'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'resources/executable/everything.exe',
                 },
@@ -236,7 +213,7 @@ class ToolManager {
                 id: '2',
                 name: 'HiBit SystemInfo',
                 category: 'portable',
-                tags: ['system', 'hardware', 'diagnose'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/hibitsysteminfo.exe',
                 },
@@ -248,7 +225,7 @@ class ToolManager {
                 id: '3',
                 name: 'HiBit Uninstaller',
                 category: 'portable',
-                tags: ['system', 'reinigung', 'software'],
+                tags: ['system', 'reinigung', 'tools'],
                 location: {
                     portable: 'resources/executable/hibituninstaller.exe',
                 },
@@ -272,7 +249,7 @@ class ToolManager {
                 id: '5',
                 name: 'ChatGPT',
                 category: 'website',
-                tags: ['ki', 'chat', 'hilfe'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://chat.openai.com',
                 },
@@ -284,7 +261,7 @@ class ToolManager {
                 id: '6',
                 name: 'Terminator',
                 category: 'website',
-                tags: ['virtualisierung', 'windows', 'linux'],
+                tags: ['virtualisierung', 'container', 'system'],
                 location: {
                     portable: 'https://terminator.aeza.net/en/',
                 },
@@ -296,7 +273,7 @@ class ToolManager {
                 id: '7',
                 name: 'VirusTotal',
                 category: 'website',
-                tags: ['sicherheit', 'malware', 'scan'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://www.virustotal.com',
                 },
@@ -308,7 +285,7 @@ class ToolManager {
                 id: '8',
                 name: 'TreeSize Free',
                 category: 'portable',
-                tags: ['speicher', 'analyse', 'dateien'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'resources/executable/treesizefree.exe',
                 },
@@ -320,7 +297,7 @@ class ToolManager {
                 id: '10',
                 name: 'LastPass Generator',
                 category: 'website',
-                tags: ['passwort', 'sicherheit', 'generator'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://www.lastpass.com/features/password-generator',
                 },
@@ -332,7 +309,7 @@ class ToolManager {
                 id: '11',
                 name: 'Encycolorpedia',
                 category: 'website',
-                tags: ['farben', 'design', 'konverter'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://encycolorpedia.com',
                 },
@@ -344,7 +321,7 @@ class ToolManager {
                 id: '12',
                 name: 'Play with Docker',
                 category: 'website',
-                tags: ['docker', 'container', 'entwicklung'],
+                tags: ['virtualisierung', 'container', 'system'],
                 location: {
                     portable: 'https://labs.play-with-docker.com',
                 },
@@ -356,7 +333,7 @@ class ToolManager {
                 id: '13',
                 name: 'RegExr',
                 category: 'website',
-                tags: ['regex', 'entwicklung', 'text'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://regexr.com',
                 },
@@ -368,7 +345,7 @@ class ToolManager {
                 id: '14',
                 name: 'Browser Privacy Check',
                 category: 'website',
-                tags: ['privacy', 'browser', 'sicherheit'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://www.experte.de/browser-privacy-check',
                 },
@@ -380,7 +357,7 @@ class ToolManager {
                 id: '15',
                 name: 'RAID Calculator',
                 category: 'website',
-                tags: ['speicher', 'raid', 'server'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'https://www.synology.com/de-de/support/RAID_calculator',
                 },
@@ -392,7 +369,7 @@ class ToolManager {
                 id: '16',
                 name: 'Can You RUN It',
                 category: 'website',
-                tags: ['gaming', 'hardware', 'kompatibilität'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'https://www.systemrequirementslab.com/cyri',
                 },
@@ -404,7 +381,7 @@ class ToolManager {
                 id: '17',
                 name: 'CrackStation',
                 category: 'website',
-                tags: ['passwort', 'hash', 'sicherheit'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://crackstation.net',
                 },
@@ -416,7 +393,7 @@ class ToolManager {
                 id: '18',
                 name: 'NameChk',
                 category: 'website',
-                tags: ['username', 'social', 'verfügbarkeit'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://namechk.com',
                 },
@@ -428,7 +405,7 @@ class ToolManager {
                 id: '19',
                 name: 'PCPartPicker',
                 category: 'website',
-                tags: ['hardware', 'pc-bau', 'kompatibilität'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'https://pcpartpicker.com',
                 },
@@ -440,7 +417,7 @@ class ToolManager {
                 id: '20',
                 name: 'Alle Störungen',
                 category: 'website',
-                tags: ['status', 'dienste', 'monitoring'],
+                tags: ['netzwerk', 'analyse', 'monitoring'],
                 location: {
                     portable: 'https://xn--allestrungen-9ib.de',
                 },
@@ -452,7 +429,7 @@ class ToolManager {
                 id: '21',
                 name: 'GPU-Z',
                 category: 'portable',
-                tags: ['grafikkarte', 'hardware', 'monitoring'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/gpuz.exe',
                 },
@@ -464,7 +441,7 @@ class ToolManager {
                 id: '22',
                 name: 'CPU-Z',
                 category: 'portable',
-                tags: ['prozessor', 'hardware', 'monitoring'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/cpuz.exe',
                 },
@@ -476,7 +453,7 @@ class ToolManager {
                 id: '23',
                 name: 'HWMonitor',
                 category: 'portable',
-                tags: ['hardware', 'temperatur', 'monitoring'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/hwmonitor.exe',
                 },
@@ -488,7 +465,7 @@ class ToolManager {
                 id: '24',
                 name: 'HeavyLoad',
                 category: 'portable',
-                tags: ['stresstest', 'hardware', 'leistung'],
+                tags: ['benchmark', 'performance', 'hardware'],
                 location: {
                     portable: 'resources/executable/heavyload.exe',
                 },
@@ -500,7 +477,7 @@ class ToolManager {
                 id: '25',
                 name: 'BatteryInfoView',
                 category: 'portable',
-                tags: ['akku', 'hardware', 'diagnose'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/batteryinfoview.exe',
                 },
@@ -512,7 +489,7 @@ class ToolManager {
                 id: '26',
                 name: 'Core Temp',
                 category: 'portable',
-                tags: ['temperatur', 'cpu', 'monitoring'],
+                tags: ['hardware', 'monitoring', 'system'],
                 location: {
                     portable: 'resources/executable/coretemp.exe',
                 },
@@ -524,7 +501,7 @@ class ToolManager {
                 id: '27',
                 name: 'LastActivityView',
                 category: 'portable',
-                tags: ['system', 'aktivität', 'protokoll'],
+                tags: ['system', 'diagnose', 'tools'],
                 location: {
                     portable: 'resources/executable/lastactivityview.exe',
                 },
@@ -536,7 +513,7 @@ class ToolManager {
                 id: '28',
                 name: 'Wireless Network Watcher',
                 category: 'portable',
-                tags: ['netzwerk', 'wlan', 'monitoring'],
+                tags: ['netzwerk', 'analyse', 'monitoring'],
                 location: {
                     portable: 'resources/executable/wnetwatcher.exe',
                 },
@@ -548,7 +525,7 @@ class ToolManager {
                 id: '29',
                 name: 'Advanced IP Scanner',
                 category: 'portable',
-                tags: ['netzwerk', 'scan', 'ip'],
+                tags: ['netzwerk', 'analyse', 'monitoring'],
                 location: {
                     portable: 'resources/executable/advancedipscanner.exe',
                 },
@@ -560,7 +537,7 @@ class ToolManager {
                 id: '30',
                 name: 'System Information for Windows',
                 category: 'portable',
-                tags: ['system', 'hardware', 'diagnose'],
+                tags: ['system', 'diagnose', 'tools'],
                 location: {
                     portable: 'resources/executable/siw.exe',
                 },
@@ -572,7 +549,7 @@ class ToolManager {
                 id: '31',
                 name: 'URLscan.io',
                 category: 'website',
-                tags: ['sicherheit', 'url', 'analyse'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://urlscan.io/',
                 },
@@ -584,7 +561,7 @@ class ToolManager {
                 id: '32',
                 name: 'Snapdrop',
                 category: 'website',
-                tags: ['dateitransfer', 'wlan', 'sharing'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'https://snapdrop.net/',
                 },
@@ -596,7 +573,7 @@ class ToolManager {
                 id: '33',
                 name: 'Send Anywhere',
                 category: 'website',
-                tags: ['dateitransfer', 'sharing', 'cloud'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'https://send-anywhere.com/',
                 },
@@ -608,7 +585,7 @@ class ToolManager {
                 id: '34',
                 name: 'SwissTransfer',
                 category: 'website',
-                tags: ['dateitransfer', 'sicherheit', 'cloud'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'https://www.swisstransfer.com/',
                 },
@@ -620,7 +597,7 @@ class ToolManager {
                 id: '35',
                 name: 'Google Phishing Quiz',
                 category: 'website',
-                tags: ['sicherheit', 'phishing', 'training'],
+                tags: ['sicherheit', 'analyse', 'schutz'],
                 location: {
                     portable: 'https://phishingquiz.withgoogle.com/',
                 },
@@ -632,7 +609,7 @@ class ToolManager {
                 id: '36',
                 name: 'Send Test Email',
                 category: 'website',
-                tags: ['email', 'test', 'diagnose'],
+                tags: ['email', 'kommunikation', 'tools'],
                 location: {
                     portable: 'https://www.sendtestmail.com/',
                 },
@@ -644,7 +621,7 @@ class ToolManager {
                 id: '37',
                 name: 'Guerrilla Mail Tools',
                 category: 'website',
-                tags: ['email', 'temporär', 'privatsphäre'],
+                tags: ['email', 'kommunikation', 'tools'],
                 location: {
                     portable: 'https://www.guerrillamail.com/',
                 },
@@ -656,7 +633,7 @@ class ToolManager {
                 id: '38',
                 name: 'Müllmail',
                 category: 'website',
-                tags: ['email', 'temporär', 'privatsphäre'],
+                tags: ['email', 'kommunikation', 'tools'],
                 location: {
                     portable: 'https://muellmail.com/',
                 },
@@ -668,7 +645,7 @@ class ToolManager {
                 id: '39',
                 name: 'DNSChecker - All Tools',
                 category: 'website',
-                tags: ['netzwerk', 'dns', 'diagnose'],
+                tags: ['netzwerk', 'analyse', 'monitoring'],
                 location: {
                     portable: 'https://dnschecker.org/all-tools.php',
                 },
@@ -680,7 +657,7 @@ class ToolManager {
                 id: '40',
                 name: 'Eat This Much',
                 category: 'website',
-                tags: ['ernährung', 'planung', 'gesundheit'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://www.eatthismuch.com/',
                 },
@@ -692,7 +669,7 @@ class ToolManager {
                 id: '41',
                 name: 'Omni Calculator',
                 category: 'website',
-                tags: ['rechner', 'konverter', 'tools'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://www.omnicalculator.com/',
                 },
@@ -704,7 +681,7 @@ class ToolManager {
                 id: '42',
                 name: 'Date Night Movies',
                 category: 'website',
-                tags: ['filme', 'unterhaltung', 'empfehlungen'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://datenightmovies.com/',
                 },
@@ -728,7 +705,7 @@ class ToolManager {
                 id: '44',
                 name: 'UniGetUI',
                 category: 'portable',
-                tags: ['paketmanager', 'software', 'installation'],
+                tags: ['system', 'reinigung', 'tools'],
                 location: {
                     portable: 'resources/executable/unigetui.exe'
                 },
@@ -740,7 +717,7 @@ class ToolManager {
                 id: '45',
                 name: 'Attribute Changer',
                 category: 'portable',
-                tags: ['dateien', 'attribute', 'system'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'resources/executable/attributechanger.exe'
                 },
@@ -752,7 +729,7 @@ class ToolManager {
                 id: '46',
                 name: 'Enigma Virtual Box',
                 category: 'portable',
-                tags: ['virtualisierung', 'software', 'portabilität'],
+                tags: ['virtualisierung', 'container', 'system'],
                 location: {
                     portable: 'resources/executable/engimavb.exe'
                 },
@@ -764,7 +741,7 @@ class ToolManager {
                 id: '47',
                 name: 'Imgur Upload',
                 category: 'website',
-                tags: ['bilder', 'upload', 'sharing'],
+                tags: ['medien', 'bilder', 'tools'],
                 location: {
                     portable: 'https://imgur.com/upload'
                 },
@@ -776,7 +753,7 @@ class ToolManager {
                 id: '48',
                 name: 'Microsoft Activation',
                 category: 'scripts',
-                tags: ['windows', 'aktivierung', 'lizenz'],
+                tags: ['system', 'diagnose', 'tools'],
                 location: {
                     portable: 'resources/executable/microsoft-activation.ps1'
                 },
@@ -788,7 +765,7 @@ class ToolManager {
                 id: '49',
                 name: 'ISO Creator',
                 category: 'portable',
-                tags: ['iso', 'erstellen', 'tools'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'resources/executable/isocreator.exe'
                 },
@@ -800,7 +777,7 @@ class ToolManager {
                 id: '50',
                 name: 'FRITZ!Box Handbuch',
                 category: 'website',
-                tags: ['device', 'handbuch', 'support'],
+                tags: ['netzwerk', 'analyse', 'monitoring'],
                 location: {
                     portable: 'https://avm.de/service/handbuecher/fritzbox/'
                 },
@@ -812,7 +789,7 @@ class ToolManager {
                 id: '51',
                 name: 'File Pizza',
                 category: 'website',
-                tags: ['dateien', 'upload', 'sharing'],
+                tags: ['dateien', 'speicher', 'tools'],
                 location: {
                     portable: 'https://file.pizza/'
                 },
@@ -824,7 +801,7 @@ class ToolManager {
                 id: '52',
                 name: 'Revo Uninstaller',
                 category: 'portable',
-                tags: ['deinstallation', 'tools', 'windows'],
+                tags: ['system', 'reinigung', 'tools'],
                 location: {
                     portable: 'resources/executable/revouninstaller.exe'
                 },
@@ -836,7 +813,7 @@ class ToolManager {
                 id: '53',
                 name: 'Photopea',
                 category: 'website',
-                tags: ['bildbearbeitung', 'online', 'tools'],
+                tags: ['medien', 'bilder', 'tools'],
                 location: {
                     portable: 'https://www.photopea.com/'
                 },
@@ -848,7 +825,7 @@ class ToolManager {
                 id: '54',
                 name: 'ShareX',
                 category: 'portable',
-                tags: ['screenshot', 'aufnahme', 'tools'],
+                tags: ['medien', 'bilder', 'tools'],
                 location: {
                     portable: 'resources/executable/sharex.exe'
                 },
@@ -860,7 +837,7 @@ class ToolManager {
                 id: '55',
                 name: 'Bulk Crap Uninstaller',
                 category: 'portable',
-                tags: ['deinstallation', 'tools', 'windows'],
+                tags: ['system', 'reinigung', 'tools'],
                 location: {
                     portable: 'resources/executable/bcuninstaller.exe'
                 },
@@ -872,7 +849,7 @@ class ToolManager {
                 id: '56',
                 name: 'CnvMP3',
                 category: 'website',
-                tags: ['video', 'audio', 'converter'],
+                tags: ['medien', 'bilder', 'tools'],
                 location: {
                     portable: 'https://cnvmp3.com/v18'
                 },
@@ -884,7 +861,7 @@ class ToolManager {
                 id: '57',
                 name: 'Zumpad',
                 category: 'website',
-                tags: ['notizen', 'online', 'tools'],
+                tags: ['entwicklung', 'tools', 'system'],
                 location: {
                     portable: 'https://zumpad.zum.de/'
                 },
@@ -896,7 +873,7 @@ class ToolManager {
                 id: '58',
                 name: 'DesktopOK',
                 category: 'portable',
-                tags: ['desktop', 'verwaltung', 'tools'],
+                tags: ['system', 'diagnose', 'tools'],
                 location: {
                     portable: 'resources/executable/desktopok.exe'
                 },
@@ -908,7 +885,7 @@ class ToolManager {
                 id: '59',
                 name: 'AnyDesk',
                 category: 'portable',
-                tags: ['remote', 'zugriff', 'tools'],
+                tags: ['remote', 'zugriff', 'netzwerk'],
                 location: {
                     portable: 'resources/executable/anydesk.exe'
                 },
@@ -920,7 +897,7 @@ class ToolManager {
                 id: '60',
                 name: 'TeamViewer',
                 category: 'portable',
-                tags: ['remote', 'zugriff', 'tools'],
+                tags: ['remote', 'zugriff', 'netzwerk'],
                 location: {
                     portable: 'resources/executable/teamviewer.exe'
                 },
@@ -932,7 +909,7 @@ class ToolManager {
                 id: '61',
                 name: 'Speedometer 2.0',
                 category: 'website',
-                tags: ['benchmark', 'browser', 'performance'],
+                tags: ['benchmark', 'performance', 'hardware'],
                 location: {
                     portable: 'https://browserbench.org/Speedometer2.0/'
                 },
@@ -944,7 +921,7 @@ class ToolManager {
                 id: '62',
                 name: 'PST Viewer',
                 category: 'website',
-                tags: ['email', 'viewer', 'tools'],
+                tags: ['email', 'kommunikation', 'tools'],
                 location: {
                     portable: 'https://goldfynch.com/pst-viewer'
                 },
@@ -956,13 +933,49 @@ class ToolManager {
                 id: '63',
                 name: 'InstalledPackagesView',
                 category: 'portable',
-                tags: ['verwaltung', 'tools'],
+                tags: ['system', 'diagnose', 'tools'],
                 location: {
                     portable: 'resources/executable/installedpackagesview.exe'
                 },
                 website: 'https://www.nirsoft.net/utils/installed_packages_view.html',
                 description: 'Zeigt eine Liste aller installierten Programme auf dem Computer an.',
                 logo: 'https://www.nirsoft.net/favicon.ico'
+            },
+            {
+                id: '64',
+                name: 'balenaEtcher',
+                category: 'portable',
+                tags: ['dateien', 'speicher', 'tools'],
+                location: {
+                    portable: 'resources/executable/balenaetcher.exe'
+                },
+                website: 'https://www.balena.io/etcher/',
+                description: 'Ein einfaches Tool zum Flashen von Images auf SD-Karten und USB-Sticks.',
+                logo: 'https://pics.computerbase.de/9/9/3/6/9-1251683479867e62/logo-256.png'
+            },
+            {
+                id: '65',
+                name: 'Disk2vhd',
+                category: 'portable',
+                tags: ['virtualisierung', 'container', 'system'],
+                location: {
+                    portable: 'resources/executable/disk2vhd.exe'
+                },
+                website: 'https://docs.microsoft.com/en-us/sysinternals/downloads/disk2vhd',
+                description: 'Ein Tool zum Erstellen von VHD-Images von physischen Festplatten.',
+                logo: 'https://learn.microsoft.com/de-de/sysinternals/downloads/media/shared/download_sm.png'
+            },
+            {
+                id: '66',
+                name: 'USBDeview',
+                category: 'portable',
+                tags: ['hardware', 'monitoring', 'system'],
+                location: {
+                    portable: 'resources/executable/usbdeview.exe'
+                },
+                website: 'https://www.nirsoft.net/utils/usb_devices_view.html',
+                description: 'Ein Tool zum Anzeigen und Verwalten aller USB-Geräte, die jemals mit dem Computer verbunden waren.',
+                logo: 'https://www.nirsoft.net/utils/usbdeview_icon.gif'
             },
         ];
     }
@@ -1100,18 +1113,53 @@ class ToolManager {
             this.trackToolUsage(tool);
         }
         
+        // Zeige den Ladeindikator nur für lokale Tools
+        const launchIndicator = document.querySelector('.launch-indicator');
+        const isLocalTool = !location.startsWith('http') && !location.startsWith('mailto:');
+        
+        if (isLocalTool) {
+            // Stelle sicher, dass der Indikator sichtbar ist
+            launchIndicator.style.display = 'flex';
+            // Kurze Verzögerung, damit die Display-Änderung wirksam wird
+            setTimeout(() => {
+                launchIndicator.classList.add('active');
+            }, 10);
+        }
+        
         try {
-            // Wenn es eine URL oder mailto ist, direkt öffnen
-            if (location.startsWith('http') || location.startsWith('mailto:')) {
-                window.electronAPI.launchTool(location);
-            } 
-            // Wenn es ein lokales Tool ist
-            else {
-                window.electronAPI.launchTool(location);
+            // Starte das Tool
+            window.electronAPI.launchTool(location);
+            
+            if (isLocalTool) {
+                // Setze einen Timeout von 5 Sekunden
+                const timeout = setTimeout(() => {
+                    launchIndicator.classList.remove('active');
+                    // Verstecke den Indikator nach der Animation
+                    setTimeout(() => {
+                        launchIndicator.style.display = 'none';
+                    }, 300);
+                }, 5000);
+                
+                // Warte auf die Bestätigung, dass das Tool gestartet wurde
+                window.electronAPI.onToolLaunched((success) => {
+                    clearTimeout(timeout); // Lösche den Timeout
+                    launchIndicator.classList.remove('active');
+                    // Verstecke den Indikator nach der Animation
+                    setTimeout(() => {
+                        launchIndicator.style.display = 'none';
+                    }, 300);
+                });
             }
         } catch (error) {
             console.error('Fehler beim Starten des Tools:', error);
-            alert('Das Tool konnte nicht gestartet werden.');
+            if (isLocalTool) {
+                launchIndicator.classList.remove('active');
+                // Verstecke den Indikator nach der Animation
+                setTimeout(() => {
+                    launchIndicator.style.display = 'none';
+                }, 300);
+            }
+            this.showToast('Tool konnte nicht gestartet werden', 'error');
         }
     }
 
@@ -2437,7 +2485,9 @@ class ToolManager {
                 const icon = checkUpdateBtn.querySelector('i');
                 icon.classList.add('fa-spin');
 
+                console.log('Starte Update-Prüfung...');
                 const updateInfo = await window.electronAPI.checkForUpdates();
+                console.log('Update-Info erhalten:', updateInfo);
                 
                 if (updateInfo.updateAvailable) {
                     this.showUpdateDialog(
@@ -2449,7 +2499,18 @@ class ToolManager {
                     this.showToast('Sie verwenden bereits die neueste Version.', 'info');
                 }
             } catch (error) {
-                this.showToast('Fehler beim Prüfen auf Updates. Bitte versuchen Sie es später erneut.', 'error');
+                console.error('Update-Prüfung fehlgeschlagen:', error);
+                let errorMessage = 'Fehler beim Prüfen auf Updates.';
+                
+                if (error.message.includes('ENOTFOUND')) {
+                    errorMessage = 'Keine Internetverbindung verfügbar.';
+                } else if (error.message.includes('ETIMEDOUT')) {
+                    errorMessage = 'Zeitüberschreitung bei der Verbindung.';
+                } else if (error.message.includes('GitHub API Fehler')) {
+                    errorMessage = 'GitHub API nicht erreichbar.';
+                }
+                
+                this.showToast(errorMessage, 'error');
             } finally {
                 checkUpdateBtn.style.pointerEvents = 'auto';
                 const icon = checkUpdateBtn.querySelector('i');
@@ -2457,6 +2518,74 @@ class ToolManager {
             }
         });
     }
+
+    showUpdateDialog(title, message, downloadUrl) {
+        const dialogHTML = `
+            <div class="update-overlay">
+                <div class="update-dialog">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <div class="confirm-dialog-buttons">
+                        <button class="confirm-btn" id="downloadUpdateBtn">Im Browser herunterladen</button>
+                        <button class="cancel-btn" id="cancelUpdateBtn">Später</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', dialogHTML);
+
+        const overlay = document.querySelector('.update-overlay');
+        const downloadBtn = document.getElementById('downloadUpdateBtn');
+        const cancelBtn = document.getElementById('cancelUpdateBtn');
+
+        downloadBtn.addEventListener('click', () => {
+            // Generiere den Download-Link dynamisch
+            const latestVersion = message.match(/\(([^)]+)\)/)[1]; // Extrahiere die Versionsnummer aus der Nachricht
+            const downloadLink = `https://github.com/AlphaTG50/FixIT/releases/download/v${latestVersion}/FixIT.Setup.v${latestVersion}.exe`;
+            
+            // Öffne den Download-Link im Browser
+            window.electronAPI.launchTool(downloadLink);
+            overlay.remove();
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            overlay.remove();
+        });
+    }
 }
 
 const toolManager = new ToolManager();
+
+// Button zum Herunterladen des neuesten Releases hinzufügen (z.B. in den Einstellungen)
+document.addEventListener('DOMContentLoaded', () => {
+    // Button dynamisch einfügen, falls nicht vorhanden
+    let updateSection = document.querySelector('.settings-section h3:contains("Hilfe")');
+    if (updateSection) {
+        const downloadBtn = document.createElement('button');
+        downloadBtn.textContent = 'Neueste Version herunterladen';
+        downloadBtn.className = 'submit-btn';
+        downloadBtn.style.marginTop = '10px';
+        downloadBtn.id = 'downloadLatestBtn';
+        updateSection.parentElement.appendChild(downloadBtn);
+    }
+
+    // Event Listener für den Button
+    const btn = document.getElementById('downloadLatestBtn');
+    if (btn) {
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            btn.textContent = 'Lade herunter...';
+            try {
+                const filePath = await window.electronAPI.downloadLatestRelease();
+                alert('Download abgeschlossen: ' + filePath);
+                window.electronAPI.showFolder(filePath);
+                btn.remove();
+            } catch (err) {
+                alert('Fehler beim Download: ' + err);
+                btn.disabled = false;
+                btn.textContent = 'Neueste Version herunterladen';
+            }
+        });
+    }
+});
